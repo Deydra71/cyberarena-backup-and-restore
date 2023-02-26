@@ -4,7 +4,7 @@
     - roles/test_mariadb/vars/main.yml
   tasks:
     - name: Check if MariaDB is accessible
-      mysql_ping:
+      community.mysql.mysql_info:
         login_host: "{{ mariadb_host }}"
         login_port: "{{ mariadb_port }}"
         login_user: "{{ mariadb_user }}"
