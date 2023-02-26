@@ -22,9 +22,9 @@
         - "'running' in container_info.container.State.Status"
 
     - name: Dump database
-      docker_container_exec:
+      community.docker.docker_container_exec:
         container: mariadb
-        command: mysqldump -u {{ mariadb_user }} -p {{ mariadb_password }} keystone > /tmp/{{ mariadb_database }}.sql
+        command: mysqldump -u {{ mariadb_user }} {{ mariadb_database }} > /tmp/{{ mariadb_database }}.sql
       become: yes
       become_user: root
       register: dump_output
