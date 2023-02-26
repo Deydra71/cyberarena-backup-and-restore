@@ -1,6 +1,5 @@
 ---
 collections:
-- name: 
-  - openstack.cloud
-  - community.docker
-  - community.mysql
+  - name: openstack.cloud
+  - name: community.docker
+  - name: community.mysql
