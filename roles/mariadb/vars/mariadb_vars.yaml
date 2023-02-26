@@ -1,5 +1,5 @@
 ---
-mariadb_host: 10.10.1.11
+mariadb_host: mariadb
 mariadb_port: 3306
 mariadb_user: ansible
 mariadb_password: ansible
