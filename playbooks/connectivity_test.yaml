@@ -3,6 +3,8 @@
   vars_files:
     - roles/test_mariadb/vars/main.yml
   tasks:
+    - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
+
     - name: Check if MariaDB is accessible
       mysql_info:
         login_host: "{{ mariadb_host }}"
