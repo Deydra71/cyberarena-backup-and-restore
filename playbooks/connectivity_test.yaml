@@ -1,4 +1,5 @@
 - name: Test MariaDB accessibility
+  hosts: controller
   vars_files:
     - roles/test_mariadb/vars/main.yml
   tasks:
