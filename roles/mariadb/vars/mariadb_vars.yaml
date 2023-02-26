@@ -1,5 +1,6 @@
 ---
 mariadb_host: mariadb
 mariadb_port: 3306
-mariadb_user: ansible
-mariadb_password: ansible
+mariadb_user: root
+mariadb_password: r7IhwzrxKWJYazPCr7xUllweDuZ8iC2at9iN59gk
+mariadb_database: keystone

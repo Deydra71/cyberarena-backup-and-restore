@@ -1,10 +1,11 @@
 - name: Test MariaDB accessibility
   hosts: 10.10.1.11
+  become: yes
   vars_files:
     - ../roles/mariadb/vars/mariadb_vars.yaml
   tasks:
     - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
-    
+
     - name: Get container info
       docker_container_info:
         name: mariadb
@@ -17,11 +18,17 @@
     - name: Check if container is running
       debug:
         msg: "Container is running"
-      when: container_info.status == 'running'
+      when:
+        - "'running' in container_info.container.State.Status"
 
-    - name: Check if MariaDB is accessible
-      mysql_info:
-        login_host: "{{ mariadb_host }}"
-        login_port: "{{ mariadb_port }}"
-        login_user: "{{ mariadb_user }}"
-        login_password: "{{ mariadb_password }}"
+    - name: Dump database
+      docker_container_exec:
+        container: mariadb
+        command: mysqldump -u {{ mariadb_user }} -p {{ mariadb_password }} keystone > /tmp/{{ mariadb_database }}.sql
+      become: yes
+      become_user: root
+      register: dump_output
+
+    - name: Print dump output
+      debug:
+        var: dump_output
