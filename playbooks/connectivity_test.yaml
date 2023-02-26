@@ -1,9 +1,23 @@
 - name: Test MariaDB accessibility
-  hosts: controller
+  hosts: 10.10.1.11
   vars_files:
-    - roles/test_mariadb/vars/main.yml
+    - ../roles/mariadb/vars/mariadb_vars.yaml
   tasks:
     - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
+    
+    - name: Get container info
+      docker_container_info:
+        name: mariadb
+      register: container_info
+
+    - name: Print container info
+      debug:
+        var: container_info
+
+    - name: Check if container is running
+      debug:
+        msg: "Container is running"
+      when: container_info.status == 'running'
 
     - name: Check if MariaDB is accessible
       mysql_info:
