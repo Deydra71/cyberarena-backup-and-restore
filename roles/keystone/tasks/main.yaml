@@ -1,7 +1,7 @@
 - name: Dump the Keystone database
   community.docker.docker_container_exec:
     container: mariadb
-    command: mysqldump -u {{ ansiblemariadb_user }} keystone > /tmp/keystone_dump.sql
+    command: mysqldump -u ansible keystone > /tmp/keystone_dump.sql
   become: true
   register: dump_output
 
