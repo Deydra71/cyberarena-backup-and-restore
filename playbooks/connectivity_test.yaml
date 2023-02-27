@@ -24,6 +24,7 @@
     - name: Dump database
       include_role:
         name: keystone
+      tasks_from: main.yaml
     #   community.docker.docker_container_exec:
     #     container: mariadb
     #     command: mysqldump -u {{ ansiblemariadb_user }} keystone > /tmp/keystone_dump.sql
