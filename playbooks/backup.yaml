@@ -1,14 +1,16 @@
 - name: Prepare the database for backup
   hosts: 10.10.1.11
   become: yes
-  block:
-    - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
+   tasks:
+    - name: Test MariaDB accessibility
+      debug:
+        var: hostvars[inventory_hostname]['ansible_default_ipv4']['address']
     
     - name: Test MariaDB accessibility
       docker_container_info:
         name: mariadb
       register: docker_container_info
-      
+
     - name: Print container info
       debug:
         var: container_info
@@ -19,6 +21,6 @@
           when:
             - "'running' in container_info.container.State.Status"
 # Add block fail condition
-- name: Dump database
-  include_role:
-    name: ../roles/keystone
+    - name: Dump database
+      include_role:
+        name: ../roles/keystone
