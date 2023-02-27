@@ -22,13 +22,14 @@
         - "'running' in container_info.container.State.Status"
 
     - name: Dump database
-      community.docker.docker_container_exec:
-        container: mariadb
-        command: mysqldump -u ansible keystone
-      stdout: true
-      become: yes
-      register: dump_output
+      include_role:
+        name: keystone
+    #   community.docker.docker_container_exec:
+    #     container: mariadb
+    #     command: mysqldump -u {{ ansiblemariadb_user }} keystone > /tmp/keystone_dump.sql
+    #   become: yes
+    #   register: dump_output
 
-    - name: Print dump output
-      debug:
-        var: dump_output
+    # - name: Print dump output
+    #   debug:
+    #     var: dump_output
