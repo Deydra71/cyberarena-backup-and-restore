@@ -9,8 +9,8 @@
   tasks:
     - name: Check if any database is selected for backup
       fail:
-        msg: "No database selected for backup. Please provide a value for selected_database in the extra-vars."
-      when: selected_database is not defined
+        msg: "No database selected for backup. Please provide a value for selected_database in the Variables box."
+      when: selected_databases is not defined
 
     - name: Check if Docker is installed
       become: yes
@@ -27,16 +27,15 @@
       failed_when: mariadb_container_info is not defined or
                    mariadb_container_info.container.State.Status != "running"
     
-    - name: Check if the selected databases exist
-      become: true
+    - name: Get a list of available databases
       community.docker.docker_container_exec:
         container: mariadb
-        command: "mysqlshow -u ansible -p{{ mariadb_password }}"
-      register: db_check
-    
-    - name: Set the available databases
+        command: "mysql -u ansible -p{{ mariadb_password }} -e 'SHOW DATABASES;'"
+      register: db_output
+
+    - name: Extract the list of databases from the output
       set_fact:
-        available_databases: "{{ db_check.stdout_lines | map('split') | map('first') | list }}"
+        available_databases: "{{ db_output.stdout | regex_search('Database\n(.*)\ninformation_schema', '\\1', multiline=True) | trim | split('\n') }}"
     
     - name: Set the database difference
       set_fact:
