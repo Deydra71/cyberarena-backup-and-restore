@@ -1,3 +1,4 @@
+---
 - name: Dump the Keystone database
   community.docker.docker_container_exec:
     container: mariadb

@@ -1,8 +1,12 @@
+---
 - name: Prepare the database for backup
   hosts: 10.10.1.11
   become: yes
 
-tasks:
+  vars_files:
+    - ../globals.yaml
+
+  tasks:
     - name: Check if Docker is installed
       become: yes
       stat:
@@ -16,20 +20,27 @@ tasks:
         name: mariadb
       register: mariadb_container_info
       failed_when: mariadb_container_info is not defined or
-                   mariadb_container_info.State.Status != "running"
-
+                   mariadb_container_info.container.State.Status != "running"
+    
     - name: Check if the database exists
-      become: yes
-      mysql_db:
-        login_host: 127.0.0.1
-        login_user: ansible
-        login_password: "{{ mariadb_password }}"
-        name: keystone
+      become: true
+      community.docker.docker_container_exec:
+        container: mariadb
+        command: "mysqlshow -u ansible -p{{ mariadb_password }}"
       register: keystone_db_check
-      failed_when: keystone_db_check is not defined or
-                   keystone_db_check.changed == true or
-                   keystone_db_check.failed == true
+    
+    # - name: Print the available databases
+    #   set_fact:
+    #     database_difference: 
+    #   when: {{ selected_database }} not in keystone_db_check
 
-    - name: Dump selected database(s)
-      include_role:
-        name: ../roles/keystone 
+    # - name: Fail if the database does not exist
+    #   fail:
+    #     msg: "Folowing databases were not found {{ database_difference }}"
+    #   when:
+    #     - keystone_db_check is not defined
+    #     - database_difference is defined
+                  
+    # - name: Dump selected database(s)
+    #   include_role:
+    #     name: ../roles/{{ selected_database }}

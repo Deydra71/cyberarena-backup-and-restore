@@ -1,5 +1,0 @@
----
-mariadb_host: mariadb
-mariadb_port: 3306
-mariadb_user: ansible
-mariadb_database: keystone
