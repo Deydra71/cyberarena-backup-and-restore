@@ -1,0 +1,2 @@
+---
+mariadb_password: "{{ mariadb_ansible_password }}"

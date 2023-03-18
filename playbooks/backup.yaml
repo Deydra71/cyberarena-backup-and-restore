@@ -1,26 +1,35 @@
 - name: Prepare the database for backup
   hosts: 10.10.1.11
   become: yes
-   tasks:
-    - name: Test MariaDB accessibility
-      debug:
-        var: hostvars[inventory_hostname]['ansible_default_ipv4']['address']
-    
-    - name: Test MariaDB accessibility
+
+tasks:
+    - name: Check if Docker is installed
+      become: yes
+      stat:
+        path: /usr/bin/docker
+      register: docker_installed
+      failed_when: docker_installed.stat.exists == False
+
+    - name: Check if MariaDB container is running
+      become: yes
       docker_container_info:
         name: mariadb
-      register: docker_container_info
+      register: mariadb_container_info
+      failed_when: mariadb_container_info is not defined or
+                   mariadb_container_info.State.Status != "running"
 
-    - name: Print container info
-      debug:
-        var: container_info
-    
-    - name: Check if container is running
-          debug:
-            msg: "Container is running"
-          when:
-            - "'running' in container_info.container.State.Status"
-# Add block fail condition
-    - name: Dump database
+    - name: Check if the database exists
+      become: yes
+      mysql_db:
+        login_host: 127.0.0.1
+        login_user: ansible
+        login_password: "{{ mariadb_password }}"
+        name: keystone
+      register: keystone_db_check
+      failed_when: keystone_db_check is not defined or
+                   keystone_db_check.changed == true or
+                   keystone_db_check.failed == true
+
+    - name: Dump selected database(s)
       include_role:
-        name: ../roles/keystone
+        name: ../roles/keystone 
