@@ -8,9 +8,9 @@
 
   tasks:
     - name: Check if any database is selected for backup
-    fail:
-      msg: "No database selected for backup. Please provide a value for selected_database in the extra-vars."
-    when: selected_database is not defined
+      fail:
+        msg: "No database selected for backup. Please provide a value for selected_database in the extra-vars."
+      when: selected_database is not defined
 
     - name: Check if Docker is installed
       become: yes
