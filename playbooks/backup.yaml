@@ -7,6 +7,11 @@
     - ../globals.yaml
 
   tasks:
+    - name: Check if any database is selected for backup
+    fail:
+      msg: "No database selected for backup. Please provide a value for selected_database in the extra-vars."
+    when: selected_database is not defined
+
     - name: Check if Docker is installed
       become: yes
       stat:
@@ -22,7 +27,7 @@
       failed_when: mariadb_container_info is not defined or
                    mariadb_container_info.container.State.Status != "running"
     
-    - name: Check if the selected database(s) exist
+    - name: Check if the selected databases exist
       become: true
       community.docker.docker_container_exec:
         container: mariadb
@@ -41,7 +46,7 @@
       fail:
         msg: "Following databases were not found: {{ database_difference }}"
       when: database_difference | length > 0
-    
+
     - name: Dump selected database(s)
       include_role:
         name: "../roles/{{ item }}"
