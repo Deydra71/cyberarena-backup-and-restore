@@ -2,5 +2,5 @@
 - name: Dump the Nova-API database
   include_role:
     name: database_dump
-    vars:
-      database: nova-api
+  vars:
+    database: nova-api

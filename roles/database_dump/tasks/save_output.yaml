@@ -1,5 +1,0 @@
----
-- name: Save the output to the file
-  copy:
-    content: "{{ dump_output.stdout }}"
-    dest: "/tmp/{{ database }}_dump.sql"

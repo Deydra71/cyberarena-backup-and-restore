@@ -2,5 +2,5 @@
 - name: Dump the Cinder database
   include_role:
     name: database_dump
-    vars:
-      database: cinder
+  vars:
+    database: cinder

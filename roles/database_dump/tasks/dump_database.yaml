@@ -5,3 +5,8 @@
     command: "mysqldump -u ansible -p{{ mariadb_password }} {{ database }}"
   become: true
   register: dump_output
+
+- name: Save the output to the file
+  copy:
+    content: "{{ dump_output.stdout }}"
+    dest: "/tmp/{{ database }}_dump.sql"

@@ -35,16 +35,7 @@
 
     - name: Extract the list of databases from the output
       set_fact:
-        available_databases: "{{ db_output.stdout | regex_search('Database\n(.*)\ninformation_schema', '\\1', multiline=True) | trim | split('\n') }}"
-    
-    - name: Set the database difference
-      set_fact:
-        database_difference: "{{ selected_databases | difference(available_databases) }}"
-    
-    - name: Fail if the selected database(s) do not exist
-      fail:
-        msg: "Following databases were not found: {{ database_difference }}"
-      when: database_difference | length > 0
+        available_databases: "{{ db_output.stdout | split('\n') }}"
 
     - name: Dump selected database(s)
       include_role:
