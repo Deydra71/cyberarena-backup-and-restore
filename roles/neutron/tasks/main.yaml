@@ -1,0 +1,6 @@
+---
+- name: Dump the Neutron database
+  include_role:
+    name: database_dump
+    vars:
+      database: neutron

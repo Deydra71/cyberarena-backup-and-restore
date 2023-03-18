@@ -22,25 +22,27 @@
       failed_when: mariadb_container_info is not defined or
                    mariadb_container_info.container.State.Status != "running"
     
-    - name: Check if the database exists
+    - name: Check if the selected database(s) exist
       become: true
       community.docker.docker_container_exec:
         container: mariadb
         command: "mysqlshow -u ansible -p{{ mariadb_password }}"
-      register: keystone_db_check
+      register: db_check
     
-    # - name: Print the available databases
-    #   set_fact:
-    #     database_difference: 
-    #   when: {{ selected_database }} not in keystone_db_check
-
-    # - name: Fail if the database does not exist
-    #   fail:
-    #     msg: "Folowing databases were not found {{ database_difference }}"
-    #   when:
-    #     - keystone_db_check is not defined
-    #     - database_difference is defined
-                  
-    # - name: Dump selected database(s)
-    #   include_role:
-    #     name: ../roles/{{ selected_database }}
+    - name: Set the available databases
+      set_fact:
+        available_databases: "{{ db_check.stdout_lines | map('split') | map('first') | list }}"
+    
+    - name: Set the database difference
+      set_fact:
+        database_difference: "{{ selected_databases | difference(available_databases) }}"
+    
+    - name: Fail if the selected database(s) do not exist
+      fail:
+        msg: "Following databases were not found: {{ database_difference }}"
+      when: database_difference | length > 0
+    
+    - name: Dump selected database(s)
+      include_role:
+        name: "../roles/{{ item }}"
+      with_items: "{{ selected_databases }}"

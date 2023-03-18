@@ -1,1 +1,6 @@
 ---
+- name: Dump the native MariaDB database
+  include_role:
+    name: database_dump
+    vars:
+      database: mariadb

@@ -1,0 +1,7 @@
+---
+- name: Dump the {{ database }} database
+  community.docker.docker_container_exec:
+    container: mariadb
+    command: "mysqldump -u ansible -p{{ mariadb_password }} {{ database }}"
+  become: true
+  register: dump_output
