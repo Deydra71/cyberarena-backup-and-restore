@@ -1,4 +1,3 @@
----
 - name: Prepare the database for backup
   hosts: 10.10.1.11
   become: yes
@@ -39,7 +38,7 @@
 
     - name: Dump selected database(s)
       include_role:
-        name: ../roles/dump_database/tasks
+        name: dump_database
       vars:
         database: "{{ item }}"
       with_items: "{{ selected_databases }}"
