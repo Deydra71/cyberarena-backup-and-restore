@@ -39,7 +39,7 @@
 
     - name: Dump selected database(s)
       include_role:
-        name: ../roles/dump_database
+        name: ../roles/dump_database/tasks
       vars:
         database: "{{ item }}"
       with_items: "{{ selected_databases }}"
