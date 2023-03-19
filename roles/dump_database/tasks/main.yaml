@@ -5,7 +5,7 @@
   become: true
   register: dump_output
 
-- name: Save the dump to the file
+- name: Save the {{ database }} dump to the file
   copy:
     content: "{{ dump_output.stdout }}"
     dest: "/tmp/{{ database }}_dump.sql"

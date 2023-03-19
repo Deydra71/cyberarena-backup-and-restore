@@ -1,0 +1,46 @@
+- name: Prepare MariaDB for backup
+  hosts: 10.10.1.11
+  become: yes
+
+  vars_files:
+    - ../globals.yaml
+
+tasks:
+    - name: Check if any database is selected for the restoration
+      fail:
+        msg: "No database selected for the restoration. Please provide a value for  selected_backups in the Variables box."
+      when:  selected_backups is not defined
+
+    - name: Add _dump.sql to selected backups
+      set_fact:
+        backup_files: "{{ backup_files | default([]) + [item + '_dump.sql'] }}"
+      loop: "{{ selected_backups }}"
+
+    - name: Check if the {{ backup_files }} files exist in the path
+      stat:
+        path: "/tmp/{{ item }}_dump.sql"
+      loop: "{{ backup_files }}"
+      register: backup_files_status
+      failed_when: "'FAILED' in backup_files_status.results | map(attribute='stat.exists') | list"
+      msg: "Backup file for {{ item.item }} not found in /tmp directory."
+        
+    - name: Check if the backup files are valid SQL file
+      shell: head -n 1 /tmp/{{ item }} | grep "^--"
+      register: sql_check
+      failed_when: sql_check.rc != 0
+      with_items: "{{ selected_backups }}"
+    
+    - name: Check if Docker is installed
+      become: yes
+      stat:
+        path: /usr/bin/docker
+      register: docker_installed
+      failed_when: docker_installed.stat.exists == False
+
+    - name: Check if MariaDB container is running
+      become: yes
+      docker_container_info:
+        name: mariadb
+      register: mariadb_container_info
+      failed_when: mariadb_container_info is not defined or
+                   mariadb_container_info.container.State.Status != "running"

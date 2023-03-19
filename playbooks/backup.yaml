@@ -1,4 +1,4 @@
-- name: Prepare the database for backup
+- name: Prepare MariaDB for backup
   hosts: 10.10.1.11
   become: yes
 
@@ -34,11 +34,16 @@
 
     - name: Extract the list of databases from the output
       set_fact:
-        available_databases: "{{ db_output.stdout | split('\n') }}"
+        available_databases: "{{ db_output.stdout | split('Database') | last | split('\n') | map('trim') | select | list }}"
+    
+    - name: Print after
+      debug:
+        msg: "{{ available_databases }}"
 
     - name: Dump selected database(s)
       include_role:
-        name: dump_database
+        name: ../roles/dump_database
       vars:
         database: "{{ item }}"
-      with_items: "{{ selected_databases }}"
+      with_items: "{{ available_databases if 'all' in selected_databases else selected_databases }}"
+      when: item != 'information_schema' and item != 'performance_schema'
