@@ -2,5 +2,5 @@
 - name: Dump the Nova-Cell database
   include_role:
     name: database_dump
-    vars:
-      database: nova-cell
+  vars:
+    database: nova-cell
