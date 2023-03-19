@@ -6,3 +6,14 @@ mariadb_password: !vault |
           39393164626263306430383337623836616561363837336561323137616363636132336635356238
           3235393363313865330a666337323761323436616532653630663433383031653261333932373838
           30356234653835366563353065356632396266346561623639313062366634333561
+# Edit if there is any change in the MariaDB available databases for OpenStack
+mariadb_databases:
+  - cinder
+  - glance
+  - heat
+  - keystone
+  - neutron
+  - nova
+  - nova-api
+  - nova-cell
+  - placement

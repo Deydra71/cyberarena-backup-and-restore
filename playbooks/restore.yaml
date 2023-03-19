@@ -1,15 +1,20 @@
 - name: Prepare MariaDB for backup
   hosts: 10.10.1.11
   become: yes
-
   vars_files:
     - ../globals.yaml
 
-tasks:
+  tasks:
     - name: Check if any database is selected for the restoration
       fail:
         msg: "No database selected for the restoration. Please provide a value for  selected_backups in the Variables box."
       when:  selected_backups is not defined
+
+    - name: Check if selected databases are valid
+      fail:
+        msg: "Invalid database selected for the restoration: {{ item }}. Please select a valid database from the mariadb_databases list."
+      when: item not in mariadb_databases
+      loop: "{{ selected_backups }}"
 
     - name: Add _dump.sql to selected backups
       set_fact:
@@ -18,11 +23,18 @@ tasks:
 
     - name: Check if the {{ backup_files }} files exist in the path
       stat:
-        path: "/tmp/{{ item }}_dump.sql"
+        path: "/tmp/{{ item }}"
       loop: "{{ backup_files }}"
       register: backup_files_status
-      failed_when: "'FAILED' in backup_files_status.results | map(attribute='stat.exists') | list"
-      msg: "Backup file for {{ item.item }} not found in /tmp directory."
+      failed_when: backup_files_status is failed
+      changed_when: false
+      ignore_errors: true
+
+    - name: Fail if any of the backup files are missing
+      fail:
+        msg: "Backup file {{ item.item }} not found in /tmp/"
+      loop: "{{ backup_files_status.results }}"
+      when: item.stat.exists == false
         
     - name: Check if the backup files are valid SQL file
       shell: head -n 1 /tmp/{{ item }} | grep "^--"
@@ -43,4 +55,4 @@ tasks:
         name: mariadb
       register: mariadb_container_info
       failed_when: mariadb_container_info is not defined or
-                   mariadb_container_info.container.State.Status != "running"
+                    mariadb_container_info.container.State.Status != "running"

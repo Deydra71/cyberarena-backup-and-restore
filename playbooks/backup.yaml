@@ -1,14 +1,13 @@
 - name: Prepare MariaDB for backup
   hosts: 10.10.1.11
   become: yes
-
   vars_files:
     - ../globals.yaml
 
   tasks:
-    - name: Check if any database is selected for backup
+    - name: Check if any database is selected for the backup
       fail:
-        msg: "No database selected for backup. Please provide a value for selected_database in the Variables box."
+        msg: "No database selected for backup. Please provide a value for selected_databases in the Variables box."
       when: selected_databases is not defined
 
     - name: Check if Docker is installed
@@ -35,10 +34,6 @@
     - name: Extract the list of databases from the output
       set_fact:
         available_databases: "{{ db_output.stdout | split('Database') | last | split('\n') | map('trim') | select | list }}"
-    
-    - name: Print after
-      debug:
-        msg: "{{ available_databases }}"
 
     - name: Dump selected database(s)
       include_role:
