@@ -12,7 +12,7 @@
 
     - name: Check if selected databases are valid
       fail:
-        msg: "Invalid database selected for the restoration: {{ item }}. Please select a valid database from the mariadb_databases list."
+        msg: "Invalid database selected for the restoration: {{ item }}. Please select a valid database from the following list: {{ mariadb_databases }}"
       when: item not in mariadb_databases
       loop: "{{ selected_backups }}"
 
