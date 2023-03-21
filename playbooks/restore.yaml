@@ -8,7 +8,7 @@
     - name: Check if any database is selected for the restoration
       fail:
         msg: "No database selected for the restoration. Please provide a value for  selected_backups in the Variables box."
-      when:  selected_backups is not defined
+      when: selected_backups is not defined
 
     - name: Check if selected databases are valid
       fail:
@@ -35,28 +35,18 @@
         msg: "Backup file {{ item.item }} not found in /tmp/"
       loop: "{{ backup_files_status.results }}"
       when: item.stat.exists == false
-        
-    - name: Check if the backup files are valid SQL files
-      shell: head -n 1 /tmp/{{ item }} | grep "^--"
-      register: sql_check
-      failed_when: sql_check.rc != 0
-      ignore_errors: true
+    
+    - name: Check if the hash matches
+      command: "sha256sum /tmp/{{ item }} | cut -d ' ' -f 1"
+      register: file_hash
       loop: "{{ backup_files }}"
-      when: item.endswith('.sql')
-
-    - name: Fail if invalid SQL files are found
-      fail:
-        msg: "Invalid SQL files found: {{ invalid_files | join(', ') }}"
-      when: invalid_files | length > 0
       vars:
-        invalid_files: "{{ [item.item for item in sql_check.results if item.failed and item.item.endswith('.sql')] }}"
-
-    - name: Check if Docker is installed
-      become: yes
-      stat:
-        path: /usr/bin/docker
-      register: docker_installed
-      failed_when: docker_installed.stat.exists == False
+      expected_hash: "{{ lookup('file', '/tmp/' + item + '.hash') }}" # Assumes the expected hash value is stored in a separate file with .sha256 extension
+      failed_when: file_hash.stdout.strip() != expected_hash.strip()
+      changed_when: false
+      ignore_errors: true
+      loop_control:
+        label: "{{ item }}"
 
     - name: Check if MariaDB container is running
       become: yes

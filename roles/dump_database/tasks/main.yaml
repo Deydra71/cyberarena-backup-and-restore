@@ -9,3 +9,12 @@
   copy:
     content: "{{ dump_output.stdout }}"
     dest: "/tmp/{{ database }}_dump.sql"
+
+- name: Create hash for {{ database }} dump file
+  shell: "sha256sum /tmp/{{ database }}_dump.sql | awk '{print $1}'"
+  register: dump_hash
+
+- name: Save {{ database }} dump hash to file
+  lineinfile:
+    line: "{{ dump_hash.stdout }} /tmp/{{ database }}_dump.hash"
+    path: "/tmp/{{ database }}_dump.hash"
