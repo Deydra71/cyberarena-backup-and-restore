@@ -36,22 +36,24 @@
       loop: "{{ backup_files_status.results }}"
       when: item.stat.exists == false
     
-    - name: Check if the hash matches
-      command: "sha256sum /tmp/{{ item }} | cut -d ' ' -f 1"
-      register: file_hash
-      loop: "{{ backup_files }}"
-      vars:
-      expected_hash: "{{ lookup('file', '/tmp/' + item + '.hash') }}" # Assumes the expected hash value is stored in a separate file with .sha256 extension
-      failed_when: file_hash.stdout.strip() != expected_hash.strip()
-      changed_when: false
-      ignore_errors: true
-      loop_control:
-        label: "{{ item }}"
-
+    - name: Check if Docker is installed
+      become: yes
+      stat:
+        path: /usr/bin/docker
+      register: docker_installed
+      failed_when: docker_installed.stat.exists == False
+    
     - name: Check if MariaDB container is running
       become: yes
       docker_container_info:
         name: mariadb
       register: mariadb_container_info
       failed_when: mariadb_container_info is not defined or
-                    mariadb_container_info.container.State.Status != "running"
+                   mariadb_container_info.container.State.Status != "running"
+    
+    - name: Start the restore process
+      include_role:
+        name: ../roles/restore_database
+      vars:
+        database: "{{ item }}"
+      with_items: "{{ backup_files }}"
