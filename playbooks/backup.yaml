@@ -5,6 +5,15 @@
     - ../globals.yaml
 
   tasks:
+    - name: Create backup directory with timestamp
+      command: "mkdir /tmp/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+      register: backup_dir_created
+
+    - name: Fail if backup directory creation failed
+      fail:
+        msg: "Failed to create backup directory"
+      when: backup_dir_created.rc != 0
+
     - name: Check if any database is selected for the backup
       fail:
         msg: "No database selected for backup. Please provide a value for selected_databases in the Variables box."
@@ -40,5 +49,6 @@
         name: ../roles/dump_database
       vars:
         database: "{{ item }}"
+        backup_dir: "/tmp/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
       with_items: "{{ available_databases if 'all' in selected_databases else selected_databases }}"
-      when: item != 'information_schema' and item != 'performance_schema'
+      when: item != 'information_schema' and item != 'performance_schema'"

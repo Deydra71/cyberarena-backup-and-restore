@@ -13,13 +13,13 @@
     - name: Check if selected databases are valid
       fail:
         msg: "Invalid database selected for the restoration: {{ item }}. Please select a valid database from the following list: {{ mariadb_databases }}"
-      when: item not in mariadb_databases
+      when: item not in mariadb_databases and item != 'all'
       loop: "{{ selected_backups }}"
 
     - name: Add _dump.sql to selected backups
       set_fact:
         backup_files: "{{ backup_files | default([]) + [item + '_dump.sql'] }}"
-      with_items: "{{ available_databases if 'all' in selected_backups else selected_backups }}"
+      with_items: "{{ mariadb_databases if 'all' in selected_backups else selected_backups }}"
 
     - name: Check if the {{ backup_files }} files exist in the path
       stat:
