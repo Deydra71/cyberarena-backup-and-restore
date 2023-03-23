@@ -4,6 +4,9 @@
   vars_files:
     - ../globals.yaml
 
+  vars:
+    backup_dir: "/tmp/{{ timestamp }}"
+
   tasks:
     - name: Check if any database is selected for the restoration
       fail:
@@ -23,7 +26,7 @@
 
     - name: Check if the {{ backup_files }} files exist in the path
       stat:
-        path: "/tmp/{{ item }}"
+        path: "{{ backup_dir }}/{{ item }}"
       loop: "{{ backup_files }}"
       register: backup_files_status
       failed_when: backup_files_status is failed
@@ -32,7 +35,7 @@
 
     - name: Fail if any of the backup files are missing
       fail:
-        msg: "Backup file {{ item.item }} not found in /tmp/"
+        msg: "Backup file {{ item.item }} not found in {{ backup_dir }}/"
       loop: "{{ backup_files_status.results }}"
       when: item.stat.exists == false
     
@@ -56,4 +59,5 @@
         name: ../roles/restore_database
       vars:
         database: "{{ item }}"
+        backup_dir: "{{ backup_dir }}"
       with_items: "{{ backup_files }}"

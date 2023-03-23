@@ -1,34 +1,34 @@
 - name: Get the hash of the {{ database }}
   stat:
-    path: "/tmp/{{ database }}.hash.result"
+    path: "{{ backup_dir }}/{{ database }}.hash.result"
   register: old_hash
 
 - name: Create temporary new hash file
   file:
-    path: "/tmp/{{ database }}.hash.new"
+    path: "{{ backup_dir }}/{{ database }}.hash.new"
     state: touch
 
 - name: Create new hash of the {{ database }}
-  shell: "sha256sum /tmp/{{ database }} | awk '{print $1}'"
+  shell: "sha256sum {{ backup_dir }}/{{ database }} | awk '{print $1}'"
   register: new_hash
 
 - name: Save the dump hash to file
   lineinfile:
     line: "{{ new_hash.stdout }}"
-    path: "/tmp/{{ database }}.hash.new"
+    path: "{{ backup_dir }}/{{ database }}.hash.new"
 
 - name: Get the new hash of the {{ database }}
   stat:
-    path: "/tmp/{{ database }}.hash.new.result"
-  register: new_hash
+    path: "{{ backup_dir }}/{{ database }}.hash.new.result"
+  register: new_hash_stat
 
 - name: Fail if the hashes differ
   fail: 
     msg: "The old and the new hash differs, {{ database }} has been probably changed."
-  when:  old_hash != new_hash
+  when: old_hash.stat.exists == true and old_hash.stat.size > 0 and old_hash.stat.md5sum != new_hash.stat.md5sum
 
 - name: Delete old hash file
   file:
-    path: "/tmp/{{ database }}.hash.new"
+    path: "{{ backup_dir }}/{{ database }}.hash.new"
     state: absent
   changed_when: false
