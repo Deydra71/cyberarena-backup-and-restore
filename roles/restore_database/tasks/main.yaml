@@ -1,31 +1,34 @@
-- name: Verify backup files
-  shell: "sha256sum /tmp/{{ database }} | awk '{print $1}'"
-  register: dump_file_hash
-  changed_when: false
+- name: Get the hash of the {{ database }}
+  stat:
+    path: "/tmp/{{ database }}.hash.result"
+  register: old_hash
 
 - name: Create temporary new hash file
   file:
     path: "/tmp/{{ database }}.hash.new"
     state: touch
 
+- name: Create new hash of the {{ database }}
+  shell: "sha256sum /tmp/{{ database }} | awk '{print $1}'"
+  register: new_hash
+
 - name: Save the dump hash to file
   lineinfile:
-    line: "{{ dump_file_hash.stdout }}"
+    line: "{{ new_hash.stdout }}"
     path: "/tmp/{{ database }}.hash.new"
 
-- name: Compare hash values
-  shell: "diff /tmp/{{ database }}.hash /tmp/{{ database }}.hash.new)"
-  register: hash_diff
-  changed_when: false
-  ignore_errors: true
+- name: Get the new hash of the {{ database }}
+  stat:
+    path: "/tmp/{{ database }}.hash.new.result"
+  register: new_hash
 
-- name: Fail if hash values differ
-  fail:
-    msg: "Hash values differ for the dump file {{ database }}"
-  when: hash_diff.results[item.0].rc != 0
+- name: Fail if the hashes differ
+  fail: 
+    msg: "The old and the new hash differs, {{ database }} has been probably changed."
+  when:  old_hash != new_hash
 
 - name: Delete old hash file
   file:
-    path: "/tmp/{{ database }}_dump.hash.new"
+    path: "/tmp/{{ database }}.hash.new"
     state: absent
   changed_when: false

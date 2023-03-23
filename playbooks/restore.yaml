@@ -19,7 +19,7 @@
     - name: Add _dump.sql to selected backups
       set_fact:
         backup_files: "{{ backup_files | default([]) + [item + '_dump.sql'] }}"
-      loop: "{{ selected_backups }}"
+      with_items: "{{ available_databases if 'all' in selected_backups else selected_backups }}"
 
     - name: Check if the {{ backup_files }} files exist in the path
       stat:

@@ -16,15 +16,15 @@
 
 - name: Create {{ database }} dump hash file
   file:
-    path: "/tmp/{{ database }}_dump.hash"
+    path: "/tmp/{{ database }}_dump.sql.hash"
     state: touch
 
 - name: Save {{ database }} dump hash to file
   lineinfile:
     line: "{{ dump_hash.stdout }}"
-    path: "/tmp/{{ database }}_dump.hash"
+    path: "/tmp/{{ database }}_dump.sql.hash"
 
 - name: Set the hash file to readable only
   file:
-    path: "/tmp/{{ database }}_dump.hash"
+    path: "/tmp/{{ database }}_dump.sql.hash"
     mode: '0444'
