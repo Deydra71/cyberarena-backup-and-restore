@@ -61,9 +61,17 @@
       failed_when: mariadb_container_info is not defined or
                    mariadb_container_info.container.State.Status != "running"
     
+    - name: Create the 'backup before restore' directory
+      command: "mkdir {{ backup_dir }}/backup_before_restore"
+    
     - name: Start the restore process
       include_role:
         name: ../roles/restore_database
+      with_nested:
+        - "{{ backup_files }}"
+        - "{{ mariadb_databases if 'all' in selected_backups else selected_backups }}"
+      loop_control:
+        loop_var: item
       vars:
-        database: "{{ item }}"
-      with_items: "{{ backup_files }}"
+        database: "{{ item[0] }}"
+        database_name: "{{ item[1] }}"

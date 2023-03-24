@@ -20,9 +20,9 @@
     state: touch
 
 - name: Save {{ database }} dump hash to file
-  lineinfile:
-    line: "{{ dump_hash.stdout }}"
-    path: "{{ backup_dir }}/{{ database }}_dump.sql.hash"
+  copy:
+    content: "{{ dump_hash.stdout | trim }}"
+    dest: "{{ backup_dir }}/{{ database }}_dump.sql.hash"
 
 - name: Set the hash file to readable only
   file:

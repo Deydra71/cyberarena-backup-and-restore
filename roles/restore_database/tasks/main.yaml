@@ -14,7 +14,7 @@
 
 - name: Save the new hash to file
   copy:
-    content: "{{ new_hash.stdout }}"
+    content: "{{ new_hash.stdout | trim }}"
     dest: "{{ backup_dir }}/{{ database }}.hash.new"
 
 - name: Get the new hash of the {{ database }}
@@ -24,9 +24,8 @@
 
 - name: Compare the new and old hash files
   ignore_errors: True
-  command: "diff {{ backup_dir }}/{{ database }}.hash {{ backup_dir }}/{{ database }}.hash.new"
+  command: "diff -Z {{ backup_dir }}/{{ database }}.hash {{ backup_dir }}/{{ database }}.hash.new"
   changed_when: false
-  failed_when: true
   register: diff_output
 
 - name: Fail if the hashes differ
@@ -38,4 +37,21 @@
   file:
     path: "{{ backup_dir }}/{{ database }}.hash.new"
     state: absent
-  changed_when: false
+
+- name: Backup the present {{ database_name }} database
+  community.docker.docker_container_exec:
+    container: mariadb
+    command: "mysqldump -u ansible -p{{ mariadb_password }} {{ database_name }}"
+  register: backup_before_restore_dump
+
+- name: Save the present {{ database_name }} dump to the file
+  copy:
+    content: "{{ backup_before_restore_dump.stdout }}"
+    dest: "{{ backup_dir }}/backup_before_restore/{{ database_name }}_dump.sql"
+
+# - name: Delete present {{ database_name }} database
+#   community.docker.docker_container_exec:
+#     container: mariadb
+#     command: "mysql -u ansible -p{{ mariadb_password }} {{ database }}"
+#   become: true
+#   register: database_deletion

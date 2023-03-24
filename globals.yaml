@@ -1,4 +1,5 @@
 ---
+# The ciphered secret for the Ansible user to access the MariaDB database
 mariadb_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           62616436376161396465393563376339383434376662316335303339663233323133346336303732
