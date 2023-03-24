@@ -1,4 +1,4 @@
-- name: Prepare MariaDB for backup
+- name: Prepare MariaDB for the backup process
   hosts: 10.10.1.11
   become: yes
   vars_files:
