@@ -1,57 +1,57 @@
-- name: Get the hash of the {{ database }}
+- name: Get the hash of the {{ backup_file }}
   stat:
-    path: "{{ backup_dir }}/{{ database }}.hash"
+    path: "{{ backup_dir }}/{{ backup_file }}.hash"
   register: old_hash_stat
 
 - name: Create temporary new hash file
   file:
-    path: "{{ backup_dir }}/{{ database }}.hash.new"
+    path: "{{ backup_dir }}/{{ backup_file }}.hash.new"
     state: touch
 
-- name: Create new hash of the {{ database }}
-  shell: "sha256sum {{ backup_dir }}/{{ database }} | awk '{print $1}'"
+- name: Create new hash of the {{ backup_file }}
+  shell: "sha256sum {{ backup_dir }}/{{ backup_file }} | awk '{print $1}'"
   register: new_hash
 
 - name: Save the new hash to file
   copy:
     content: "{{ new_hash.stdout | trim }}"
-    dest: "{{ backup_dir }}/{{ database }}.hash.new"
+    dest: "{{ backup_dir }}/{{ backup_file }}.hash.new"
 
-- name: Get the new hash of the {{ database }}
+- name: Get the new hash of the {{ backup_file }}
   stat:
-    path: "{{ backup_dir }}/{{ database }}.hash.new"
+    path: "{{ backup_dir }}/{{ backup_file }}.hash.new"
   register: new_hash_stat
 
 - name: Compare the new and old hash files
   ignore_errors: True
-  command: "diff -Z {{ backup_dir }}/{{ database }}.hash {{ backup_dir }}/{{ database }}.hash.new"
+  command: "diff -Z {{ backup_dir }}/{{ backup_file }}.hash {{ backup_dir }}/{{ backup_file }}.hash.new"
   changed_when: false
   register: diff_output
 
 - name: Fail if the hashes differ
   fail:
-    msg: "The old and new hashes differ for {{ database }}"
+    msg: "The old and new hashes differ for {{ backup_file }}"
   when: diff_output.rc != 0
 
 - name: Delete old hash file
   file:
-    path: "{{ backup_dir }}/{{ database }}.hash.new"
+    path: "{{ backup_dir }}/{{ backup_file }}.hash.new"
     state: absent
 
-- name: Backup the present {{ database_name }} database
+- name: Backup the present {{ database }} database
   community.docker.docker_container_exec:
     container: mariadb
-    command: "mysqldump -u ansible -p{{ mariadb_password }} {{ database_name }}"
+    command: "mysqldump -u ansible -p{{ mariadb_password }} {{ database }}"
   register: backup_before_restore_dump
 
-- name: Save the present {{ database_name }} dump to the file
+- name: Save the present {{ database }} dump to the file
   copy:
     content: "{{ backup_before_restore_dump.stdout }}"
-    dest: "{{ backup_dir }}/backup_before_restore/{{ database_name }}_dump.sql"
+    dest: "{{ backup_dir }}/backup_before_restore/{{ database }}_dump.sql"
 
-# - name: Delete present {{ database_name }} database
+# - name: Delete present {{ database }} database
 #   community.docker.docker_container_exec:
 #     container: mariadb
-#     command: "mysql -u ansible -p{{ mariadb_password }} {{ database }}"
+#     command: "mysql -u ansible -p{{ mariadb_password }} {{ backup_file }}"
 #   become: true
 #   register: database_deletion

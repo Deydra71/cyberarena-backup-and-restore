@@ -56,9 +56,5 @@
   include_role:
     name: ../roles/restore_database
   vars:
-    database: "{{ item.backup_files }}"
-    database_name: "{{ item.mariadb_databases if 'all' in selected_backups else selected_backups }}"
-  loop:
-    - "{{ backup_files }}"
-    - "{{ mariadb_databases }}"
-    - "{{ selected_backups }}"
+    databases_and_backups: "{{ [{'backup_file': item[0], 'database': item[1]} for item in zip(mariadb_databases if 'all' in selected_backups else selected_backups, backup_files)] }}"
+  loop: "{{ databases_and_backups }}"
