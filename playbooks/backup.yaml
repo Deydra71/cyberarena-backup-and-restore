@@ -3,4 +3,6 @@
   become: yes
   vars_files:
     - ../globals.yaml
-  include_tasks: ../tasks/prepare_backup.yaml
+  tasks:
+    - name: Include tasks for backup process
+      include_tasks: ../tasks/prepare_backup.yaml

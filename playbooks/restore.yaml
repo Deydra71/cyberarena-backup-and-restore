@@ -5,4 +5,6 @@
     - ../globals.yaml
   vars:
     backup_dir: "/tmp/{{ timestamp[0] }}"
-  include_tasks: ../tasks/prepare_restore.yaml
+  tasks:
+    - name: Include tasks for restore process
+      include_tasks: ../tasks/prepare_restore.yaml
