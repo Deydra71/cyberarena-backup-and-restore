@@ -49,9 +49,16 @@
     content: "{{ backup_before_restore_dump.stdout }}"
     dest: "{{ backup_dir }}/backup_before_restore/{{ database_name }}_dump.sql"
 
-# - name: Delete present {{ database_name }} database
-#   community.docker.docker_container_exec:
-#     container: mariadb
-#     command: "mysql -u ansible -p{{ mariadb_password }} {{ database }}"
-#   become: true
-#   register: database_deletion
+- name: Drop the present {{ database_name }} database
+  community.docker.docker_container_exec:
+    container: mariadb
+    command: "mysql -u ansible -p{{ mariadb_password }} -e \"DROP DATABASE IF EXISTS {{ database_name }}\""
+  register: database_deletion
+
+- name: Create new {{ database_name }} database
+  community.docker.docker_container_exec:
+    container: mariadb
+    command: "mysql -u ansible -p{{ mariadb_password }} -e \"CREATE DATABASE {{ database_name }}\""
+
+- name: Restore {{ database_name }} database from the {{ database }} file
+  shell: "sudo docker exec -i mariadb mysql -u ansible -p{{ mariadb_password }} {{ database_name }} < {{ backup_dir }}/{{ database }}"
