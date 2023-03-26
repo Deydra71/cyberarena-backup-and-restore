@@ -1,0 +1,83 @@
+---
+- name: Test restored OpenStack resources
+  hosts: 10.10.1.11
+  gather_facts: no
+  tasks:
+    - name: Install openstack.cloud collection
+      ansible.builtin.ansible_galaxy_collection:
+        name: openstack.cloud
+        state: present
+
+    - name: Test users
+      openstack.cloud.user_info:
+        cloud: my_cloud
+        name: "{{ item }}"
+      register: users_result
+      loop:
+        - user1
+        - user2
+      failed_when: item not in (users_result.resources | map(attribute='name') | list)
+
+    - name: Test projects
+      openstack.cloud.project_info:
+        cloud: my_cloud
+        name: "{{ item }}"
+      register: projects_result
+      loop:
+        - project1
+        - project2
+      failed_when: item not in (projects_result.resources | map(attribute='name') | list)
+
+    - name: Test networks
+      openstack.cloud.network_info:
+        cloud: my_cloud
+        name: "net_{{ item }}"
+      register: networks_result
+      loop:
+        - project1
+        - project2
+      failed_when: item not in (networks_result.resources | map(attribute='name') | list)
+
+    - name: Test subnets
+      openstack.cloud.subnet_info:
+        cloud: my_cloud
+        name: "subnet_{{ item }}"
+      register: subnets_result
+      loop:
+        - project1
+        - project2
+      failed_when: item not in (subnets_result.resources | map(attribute='name') | list)
+
+    - name: Test routers
+      openstack.cloud.router_info:
+        cloud: my_cloud
+        name: "router_{{ item }}"
+      register: routers_result
+      loop:
+        - project1
+        - project2
+      failed_when: item not in (routers_result.resources | map(attribute='name') | list)
+
+    - name: Test security group
+      openstack.cloud.security_group_info:
+        cloud: my_cloud
+        name: default_security_group
+      register: security_group_result
+      failed_when: "'default_security_group' not in (security_group_result.resources | map(attribute='name') | list)"
+
+    - name: Test keypair
+      openstack.cloud.keypair_info:
+        cloud: my_cloud
+        name: my_keypair
+      register: keypair_result
+      failed_when: "'my_keypair' not in (keypair_result.resources | map(attribute='name') | list)"
+
+    - name: Test instances
+      openstack.cloud.server_info:
+        cloud: my_cloud
+        name: "instance_{{ item }}"
+      register: instances_result
+      loop:
+        - project1
+        - project2
+      failed_when: item not in (instances_result.resources | map(attribute='name') | list)

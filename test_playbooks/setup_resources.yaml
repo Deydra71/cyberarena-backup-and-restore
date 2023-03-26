@@ -1,0 +1,101 @@
+---
+- name: Set up OpenStack resources
+  hosts: 10.10.1.11
+  gather_facts: no
+  tasks:
+    - name: Install openstack.cloud collection
+      ansible.builtin.ansible_galaxy_collection:
+        name: openstack.cloud
+        state: present
+
+    - name: Create users
+      openstack.cloud.user:
+        cloud: my_cloud
+        name: "{{ item }}"
+        password: "{{ item }}_password"
+      loop:
+        - user1
+        - user2
+
+    - name: Create projects
+      openstack.cloud.project:
+        cloud: my_cloud
+        name: "{{ item }}"
+      loop:
+        - project1
+        - project2
+
+    - name: Set up access rights
+      openstack.cloud.role_assignment:
+        cloud: my_cloud
+        role: "_member_"
+        user: "{{ item.user }}"
+        project: "{{ item.project }}"
+      loop:
+        - { user: 'user1', project: 'project1' }
+        - { user: 'user2', project: 'project2' }
+
+    - name: Create networks
+      openstack.cloud.network:
+        cloud: my_cloud
+        name: "net_{{ item }}"
+      register: networks_result
+      loop:
+        - project1
+        - project2
+
+    - name: Create subnets
+      openstack.cloud.subnet:
+        cloud: my_cloud
+        name: "subnet_{{ item.network.name }}"
+        network_name: "{{ item.network.name }}"
+        cidr: "{{ item.cidr }}"
+      loop:
+        - { network: "{{ networks_result.resources[0] }}", cidr: '192.168.1.0/24' }
+        - { network: "{{ networks_result.resources[1] }}", cidr: '192.168.2.0/24' }
+
+    - name: Create routers
+      openstack.cloud.router:
+        cloud: my_cloud
+        name: "router_{{ item }}"
+      register: routers_result
+      loop:
+        - project1
+        - project2
+
+    - name: Attach routers to subnets
+      openstack.cloud.router_interface:
+        cloud: my_cloud
+        router: "{{ item.router.name }}"
+        subnet: "subnet_{{ item.router.name }}"
+      loop:
+        - { router: "{{ routers_result.resources[0] }}" }
+        - { router: "{{ routers_result.resources[1] }}" }
+
+    - name: Create security group
+      openstack.cloud.security_group:
+        cloud: my_cloud
+        name: default_security_group
+        description: Default security group
+
+    - name: Add rules to security group
+      openstack.cloud.security_group_rule:
+        cloud: my_cloud
+        security_group: default_security_group
+        protocol: "{{ item.protocol }}"
+        direction: "{{ item.direction }}"
+        port_range_min: "{{ item.port_range_min }}"
+        port_range_max: "{{ item.port_range_max }}"
+      loop:
+        - { protocol: 'icmp', direction: 'ingress', port_range_min: -1, port_range_max: -1 }
+        - { protocol: 'tcp', direction: 'ingress', port_range_min: 22, port_range_max: 22 }
+
+    - name: Create keypair
+      openstack.cloud.keypair:
+        cloud: my_cloud
+        name: my_keypair
+
+    - name: Create instances with basic cirros image
+      openstack.cloud.server:
+        cloud: my_cloud
+        name: "instance
