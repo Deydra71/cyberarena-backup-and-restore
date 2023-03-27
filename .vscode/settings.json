@@ -1,5 +1,0 @@
-{
-    "yaml.schemas": {
-        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": "file:///c%3A/Users/Deydra/Documents/GitHub/OpenStack-MariaDB-backup-and-restore/roles/placement/tasks/main.yaml"
-    }
-}
