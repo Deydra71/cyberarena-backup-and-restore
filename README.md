@@ -21,30 +21,30 @@ If the MariaDB databases will differ in the future, the parameter 'mariadb_datab
 ### The extra vars for the backup.yaml playbook
 #### In the AWX environment:
 Edit the variables box, e.g.:
-'''
+```
 ---
 selected_databases:
   - cinder
   - keystone
   - neutron
-'''
+```
 
 or, if all databases should be backuped:
-'''
+```
 ---
 selected_databases: 
   - all
-'''
+```
 
 #### In the CLI:
 
-''' ansible-playbook <path_to_the_backup.yaml> -e '{"selected_databases": ["cinder", "keystone", "neutron"]}' '''
+``` ansible-playbook <path_to_the_backup.yaml> -e '{"selected_databases": ["cinder", "keystone", "neutron"]}' ```
 
 ### The extra vars for the restore.yaml playbook
 #### In the AWX environment:
 
 Edit the variables box, e.g.:
-'''
+```
 ---
 selected_backups:
   - cinder
@@ -52,16 +52,16 @@ selected_backups:
   - neutron
 timestamp:
   -  2023-03-25_14:53:50
-'''
+```
 
 or, if all databases should be restored:
-'''
+```
 ---
 selected_backups:
   - all
 timestamp:
   -  2023-03-25_14:53:50
-'''
+```
 
 Both 'selected_backups' and 'timestamp' vars are mandatory for successful playbook run!
 
@@ -69,7 +69,7 @@ The 'timestamp' value can be found in the '/tmp' directory as it is the default 
 
 #### In the CLI:
 
-''' ansible-playbook <path_to_the_backup.yaml> -e '{"selected_backups": ["all"], "timestamp": ["2023-03-25_14:53:50"]}' '''
+``` ansible-playbook <path_to_the_backup.yaml> -e '{"selected_backups": ["all"], "timestamp": ["2023-03-25_14:53:50"]}' ```
 
 For both backup and restore, you can pass extra vars as a file in YAML format and pass it as, e.g.:
 ansible-playbook <path_to_the_backup.yaml> -e @vars_file.yml
