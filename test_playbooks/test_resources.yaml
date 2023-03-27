@@ -10,7 +10,7 @@
 
     - name: Test users
       openstack.cloud.user_info:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "{{ item }}"
       register: users_result
       loop:
@@ -20,7 +20,7 @@
 
     - name: Test projects
       openstack.cloud.project_info:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "{{ item }}"
       register: projects_result
       loop:
@@ -30,7 +30,7 @@
 
     - name: Test networks
       openstack.cloud.network_info:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "net_{{ item }}"
       register: networks_result
       loop:
@@ -40,7 +40,7 @@
 
     - name: Test subnets
       openstack.cloud.subnet_info:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "subnet_{{ item }}"
       register: subnets_result
       loop:
@@ -50,7 +50,7 @@
 
     - name: Test routers
       openstack.cloud.router_info:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "router_{{ item }}"
       register: routers_result
       loop:
@@ -60,21 +60,21 @@
 
     - name: Test security group
       openstack.cloud.security_group_info:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: default_security_group
       register: security_group_result
       failed_when: "'default_security_group' not in (security_group_result.resources | map(attribute='name') | list)"
 
     - name: Test keypair
       openstack.cloud.keypair_info:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: my_keypair
       register: keypair_result
       failed_when: "'my_keypair' not in (keypair_result.resources | map(attribute='name') | list)"
 
     - name: Test instances
       openstack.cloud.server_info:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "instance_{{ item }}"
       register: instances_result
       loop:

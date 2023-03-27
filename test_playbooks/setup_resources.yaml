@@ -10,7 +10,7 @@
 
     - name: Create users
       openstack.cloud.user:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "{{ item }}"
         password: "{{ item }}_password"
       loop:
@@ -19,7 +19,7 @@
 
     - name: Create projects
       openstack.cloud.project:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "{{ item }}"
       loop:
         - project1
@@ -27,7 +27,7 @@
 
     - name: Set up access rights
       openstack.cloud.role_assignment:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         role: "_member_"
         user: "{{ item.user }}"
         project: "{{ item.project }}"
@@ -37,7 +37,7 @@
 
     - name: Create networks
       openstack.cloud.network:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "net_{{ item }}"
       register: networks_result
       loop:
@@ -46,7 +46,7 @@
 
     - name: Create subnets
       openstack.cloud.subnet:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "subnet_{{ item.network.name }}"
         network_name: "{{ item.network.name }}"
         cidr: "{{ item.cidr }}"
@@ -56,7 +56,7 @@
 
     - name: Create routers
       openstack.cloud.router:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: "router_{{ item }}"
       register: routers_result
       loop:
@@ -65,7 +65,7 @@
 
     - name: Attach routers to subnets
       openstack.cloud.router_interface:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         router: "{{ item.router.name }}"
         subnet: "subnet_{{ item.router.name }}"
       loop:
@@ -74,13 +74,13 @@
 
     - name: Create security group
       openstack.cloud.security_group:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: default_security_group
         description: Default security group
 
     - name: Add rules to security group
       openstack.cloud.security_group_rule:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         security_group: default_security_group
         protocol: "{{ item.protocol }}"
         direction: "{{ item.direction }}"
@@ -92,10 +92,10 @@
 
     - name: Create keypair
       openstack.cloud.keypair:
-        cloud: my_cloud
+        cloud: openstack-1-2-1
         name: my_keypair
 
     - name: Create instances with basic cirros image
       openstack.cloud.server:
-        cloud: my_cloud
-        name: "instance
+        cloud: openstack-1-2-1
+        name: "instance"
