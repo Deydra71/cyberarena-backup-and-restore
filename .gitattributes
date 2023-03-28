@@ -1,2 +1,1 @@
-* linguist-vendored
-*.yaml linguist-vendored=false
+*.yaml linguist-detectable
