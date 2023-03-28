@@ -7,7 +7,7 @@
     - name: Include tasks for backup process
       include_tasks: ../tasks/prepare_backup.yaml
 
-    - name: Copy the dump files to the storage server
+    - name: Create the backup directory on the storage server
           ansible.builtin.file:
             path: "/tmp/{{ backup_dir_created.stdout }}"
             state: directory

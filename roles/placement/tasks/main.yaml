@@ -1,6 +1,0 @@
----
-- name: Dump the Placement database
-  include_role:
-    name: database_dump
-  vars:
-    database: placement

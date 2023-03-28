@@ -1,6 +1,0 @@
----
-- name: Dump the Keystone database
-  include_role:
-    name: ../roles/dump_database
-  vars:
-    database: keystone
