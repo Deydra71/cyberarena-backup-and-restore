@@ -1,8 +1,27 @@
 - name: Prepare MariaDB for the backup process
-  hosts: 10.10.1.11
+  hosts: controller
   become: yes
   vars_files:
     - ../globals.yaml
   tasks:
     - name: Include tasks for backup process
       include_tasks: ../tasks/prepare_backup.yaml
+
+    - name: Copy the dump files to the storage server
+          ansible.builtin.file:
+            path: "/tmp/{{ backup_dir_created.stdout }}"
+            state: directory
+            delegate_to: "{{ storage_server_ip }}"
+            remote_user: "{{ ssh_user }}"
+            ssh_pass: "{{ ssh_password }}"
+          when: storage is defined and backup_dir_created is defined
+
+    - name: Copy the dump files to the storage server
+      ansible.builtin.copy:
+        src: "{{ backup_dir }}/{{ item }}_dump.sql"
+        dest: "/tmp/{{ backup_dir_created.stdout }}/{{ item }}_dump.sql"
+        delegate_to: "{{ storage_server_ip }}"
+        remote_user: "{{ ssh_user }}"
+        ssh_pass: "{{ ssh_password }}"
+      with_items: "{{ available_databases }}"
+      when: storage is defined and backup_dir_created is defined

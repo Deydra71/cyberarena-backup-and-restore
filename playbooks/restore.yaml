@@ -1,5 +1,5 @@
 - name: Prepare MariaDB for the restore process
-  hosts: 10.10.1.11
+  hosts: controller
   become: yes
   vars_files:
     - ../globals.yaml
