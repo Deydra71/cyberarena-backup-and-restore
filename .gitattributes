@@ -1,12 +1,2 @@
-playbooks/* linguist-documentation=false
-playbooks/* linguist-vendored=false
-playbooks/* linguist-generated=false
-roles/* linguist-documentation=false
-roles/* linguist-vendored=false
-roles/* linguist-generated=false
-tasks/* linguist-documentation=false
-tasks/* linguist-vendored=false
-tasks/* linguist-generated=false
-tests/* linguist-documentation=false
-tests/* linguist-vendored=false
-tests/* linguist-generated=false
+* linguist-vendored
+*.yaml linguist-vendored=false
