@@ -1,2 +1,8 @@
-dist/* linguist-documentation=false
-dist/* linguist-vendored=false
+playbooks/* linguist-documentation=false
+playbooks/* linguist-vendored=false
+roles/* linguist-documentation=false
+roles/* linguist-vendored=false
+tasks/* linguist-documentation=false
+tasks/* linguist-vendored=false
+tests/* linguist-documentation=false
+tests/* linguist-vendored=false
