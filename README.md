@@ -5,7 +5,7 @@ The Ansible project for creating backups for the core OpenStack services form th
 ## Use case
 This project is intended to be run from the AWX platform, so the inventory and vault credentials are configured there, with few modification, it can be run from the CLI as well (the major difference is the configuration of the Ansible vault).
 
-In the file 'globals.yaml' are defined databases, which can be backuped (restored respectively). Currently, the possible databases are:
+In the file ```globals.yaml``` are defined databases, which can be backuped (restored respectively). Currently, the possible databases are:
  * cinder
  * glance
  * heat
@@ -15,6 +15,8 @@ In the file 'globals.yaml' are defined databases, which can be backuped (restore
  * nova_api
  * nova_cell0
  * placement
+
+Please note, that the databases will differ based on the individual OpenStack environment, in that case, this list must be chnaged properly.
 
 If the MariaDB databases will differ in the future, the parameter 'mariadb_databases' can be changed accordingly. Based on the values in the 'mariadb_databases' parameter, the extra-vars can be executed along with the backup or restore playbook.
 
