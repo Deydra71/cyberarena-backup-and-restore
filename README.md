@@ -81,7 +81,7 @@ For both backup and restore, you can pass extra vars as a file in the valid YAML
 
 ### On hosts machine (the host with the MariaDB container):
 * Python >= 3.6
-* openstacksdk
+* openstacksdk with the ```clouds.yaml``` file specified on the host machine to suit the individual OpenStack environment, for more information, please refer to the OpenStack.Cloud collection.
 * Docker API >= 1.20
 * Docker SDK for Python
 
