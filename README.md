@@ -72,12 +72,14 @@ The 'timestamp' value can be found in the '/tmp' directory as it is the default 
 ``` ansible-playbook <path_to_the_backup.yaml> -e '{"selected_backups": ["all"], "timestamp": ["2023-03-25_14:53:50"]}' ```
 
 For both backup and restore, you can pass extra vars as a file in the valid YAML format and pass it as, e.g.:
+
 ``` ansible-playbook <path_to_the_backup.yaml> -e @vars_file.yml ```
 
 ## TODO: Requirements
 * Ansible >= 2.10
 * Ansible vault
-### On hosts machine (most likely the OpenStack controller, or the host with the MariaDB container)
+
+### On hosts machine (the host with the MariaDB container):
 * Python >= 3.6
 * openstacksdk
 * Docker API >= 1.20
