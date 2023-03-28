@@ -88,7 +88,8 @@ For both backup and restore, you can pass extra vars as a file in the valid YAML
 * Docker SDK for Python
 
 ## TODO: 
-* Copy the backup files to the storage server
+* Automate the copying of the backup files to the storage server
 * Finnish the testing setup
 * Add the playbook, which would backup only the images used for the BUTCA purposes.
 * Edit the mariadb_password variable, so it could  be set up as the extra-vars
+* Edit the inventory file, so the IP is not visible (specified at the AWX environment)
