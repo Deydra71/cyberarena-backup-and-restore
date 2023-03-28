@@ -16,7 +16,7 @@ In the file ```globals.yaml``` are defined databases, which can be backuped (res
  * nova_cell0
  * placement
 
-Please note, that the databases will differ based on the individual OpenStack environment, in that case, this list must be chnaged properly.
+Please note, that the databases will differ based on the individual OpenStack environment, in that case, this list must be changed properly.
 
 If the MariaDB databases will differ in the future, the parameter 'mariadb_databases' can be changed accordingly. Based on the values in the 'mariadb_databases' parameter, the extra-vars can be executed along with the backup or restore playbook.
 
