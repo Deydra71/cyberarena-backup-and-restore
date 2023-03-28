@@ -1,12 +1,7 @@
 ---
-# The ciphered secret for the Ansible user to access the MariaDB database
-mariadb_password: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          62616436376161396465393563376339383434376662316335303339663233323133346336303732
-          6261333830393237653932346136313866303363356434330a663432323562333632663433646565
-          39393164626263306430383337623836616561363837336561323137616363636132336635356238
-          3235393363313865330a666337323761323436616532653630663433383031653261333932373838
-          30356234653835366563353065356632396266346561623639313062366634333561
+# The ciphered secret for the Ansible user to access the MariaDB database. The 'mariadb_vault_key' parameter is passed as the extra-vars.
+mariadb_password: "{{ lookup('vault', mariadb_vault_key) }}"
+
 # Edit if there is any change in the MariaDB available databases for OpenStack
 mariadb_databases:
   - cinder
