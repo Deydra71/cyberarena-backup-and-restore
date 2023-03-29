@@ -77,7 +77,7 @@ For both backup and restore, you can pass extra vars as a file in the valid YAML
 
 ``` ansible-playbook <path_to_the_backup.yaml> -e @vars_file.yml ```
 
-## TODO: Requirements
+## Requirements
 * Ansible >= 2.10
 * Ansible vault
 
