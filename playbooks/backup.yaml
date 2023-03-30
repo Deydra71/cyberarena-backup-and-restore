@@ -8,13 +8,13 @@
       include_tasks: ../tasks/prepare_backup.yaml
 
     - name: Create the backup directory on the storage server
-          ansible.builtin.file:
-            path: "/tmp/{{ backup_dir_created.stdout }}"
-            state: directory
-            delegate_to: "{{ storage_server_ip }}"
-            remote_user: "{{ ssh_user }}"
-            ssh_pass: "{{ ssh_password }}"
-          when: storage is defined and backup_dir_created is defined
+      ansible.builtin.file:
+        path: "/tmp/{{ backup_dir_created.stdout }}"
+        state: directory
+        delegate_to: "{{ storage_server_ip }}"
+        remote_user: "{{ ssh_user }}"
+        ssh_pass: "{{ ssh_password }}"
+      when: storage is defined and backup_dir_created is defined
 
     - name: Copy the dump files to the storage server
       ansible.builtin.copy:
