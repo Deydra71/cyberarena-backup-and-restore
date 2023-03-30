@@ -3,44 +3,7 @@
   become: yes
   vars_files:
     - ../globals.yaml
-  vars:
-    controller_dump_files: []
-    controller_backup_dir: ""
 
   tasks:
     - name: Include tasks for backup process
       include_tasks: ../tasks/prepare_mariadb_backup.yaml
-
-    - name: Append dump files to list
-      set_fact:
-        controller_dump_files: "{{ controller_dump_files + [item] }}_dump.sql"
-      with_items: "{{ all_dump_files.results }}"
-    
-    - name: Print debug
-      debug:
-        msg: 
-          - "{{ controller_dump_files }}"
-
-    - name: Set backup directory
-      set_fact:
-        controller_backup_dir: "{{ backup_dir_created.cmd[1] | regex_replace('^.*/') }}"
-
-    - name: Print debug
-      debug:
-        msg: 
-          - "{{ controller_backup_dir }}"
-
-- name: Create the backup directory on the storage server and copy files from controller
-  hosts: storage
-  become: yes
-  tasks:
-    - name: Print debug
-      debug:
-        msg: 
-          - "{{ controller_dump_files }}"
-          - "{{ controller_backup_dir }}"
-
-    - name: Create backup directory
-      ansible.builtin.file:
-        path: "{{ controller_backup_dir }}"
-        state: directory
