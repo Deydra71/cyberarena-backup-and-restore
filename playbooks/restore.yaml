@@ -7,4 +7,4 @@
     backup_dir: "/tmp/{{ timestamp[0] }}"
   tasks:
     - name: Include tasks for restore process
-      include_tasks: ../tasks/prepare_restore.yaml
+      include_tasks: ../tasks/prepare_mariadb_restore.yaml

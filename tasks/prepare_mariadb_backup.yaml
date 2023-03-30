@@ -1,6 +1,9 @@
 - name: Create backup directory with timestamp
   command: "mkdir /tmp/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
   register: backup_dir_created
+  delegate_to:
+    - "controller"
+    - "storage"
 
 - name: Fail if backup directory creation failed
   fail:
@@ -38,6 +41,7 @@
 - name: Dump selected database(s)
   include_role:
     name: ../roles/dump_database
+  register: all_dump_files
   vars:
     database: "{{ item }}"
     backup_dir: "/tmp/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"

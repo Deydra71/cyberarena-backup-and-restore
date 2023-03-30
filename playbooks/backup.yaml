@@ -5,4 +5,21 @@
     - ../globals.yaml
   tasks:
     - name: Include tasks for backup process
-      include_tasks: ../tasks/prepare_backup.yaml
+      include_tasks: ../tasks/prepare_mariadb_backup.yaml
+
+- name: Create the backup directory on the storage server and copy files from controller
+  hosts: storage
+  become: yes
+  vars:
+
+  tasks:
+    - name: Print debug
+      debug:
+        msg: 
+          - "{{ all_dump_files }}"
+          - "{{ backup_dir_created }}"
+
+    - name: Create backup directory
+      ansible.builtin.file:
+        path: "/tmp/{{ backup_dir_created }}"
+        state: directory
