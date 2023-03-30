@@ -32,17 +32,23 @@
   ansible.builtin.file:
     path: "/tmp/{{ backup_dir_created.stdout }}"
     state: directory
-    delegate_to: "{{ storage }}"
-    storage_user: "{{ storage_user }}"
-    ssh_pass: "{{ storage_password }}"
+    become: true
+    become_user: "{{ storage_user }}"
+    vars:
+      ansible_password: "{{ storage_password }}"
   when: storage is defined and backup_dir_created is defined
+  vars:
+    ansible_host: "{{ storage }}"
 
 - name: Copy the dump files to the storage server
   ansible.builtin.copy:
     src: "{{ backup_dir }}/{{ item }}_dump.sql"
     dest: "/tmp/{{ backup_dir_created.stdout }}/{{ item }}_dump.sql"
-    delegate_to: "{{ storage }}"
-    storage_user: "{{ storage_user }}"
-    ssh_pass: "{{ ssh_password }}"
+    become: true
+    become_user: "{{ storage_user }}"
+    vars:
+      ansible_password: "{{ storage_password }}"
   with_items: "{{ available_databases }}"
   when: storage is defined and backup_dir_created is defined
+  vars:
+    ansible_host: "{{ storage }}"
