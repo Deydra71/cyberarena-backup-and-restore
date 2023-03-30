@@ -1,10 +1,19 @@
-- name: Get the images
+- name: Get the OpenStack images
+  # TODO: Use the OpenStack collection CLI insteadk of the shell module
   shell: "openstack image list -c ID -c Name -f value | awk '{print $1,$2}'"
   register: image_list
+
+- name: Print the image_list debugging
+  debug:
+    msg: "{{ image_list }}"
 
 - name: Parse the image list output
   set_fact:
     images: "{{ image_list.stdout_lines | map('split', ' ') | map('list') | list }}"
+
+- name: Print the images debugging
+  debug:
+    msg: "{{ images }}"
 
 - name: Create the backup directory on the storage server
   ansible.builtin.file:

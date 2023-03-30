@@ -1,6 +1,6 @@
 ---
 - name: Test restored OpenStack resources
-  hosts: 10.10.1.11
+  hosts: controller
   gather_facts: no
   tasks:
     - name: Install openstack.cloud collection
