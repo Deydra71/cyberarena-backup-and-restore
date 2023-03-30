@@ -42,4 +42,4 @@
     database: "{{ item }}"
     backup_dir: "/tmp/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
   with_items: "{{ available_databases if 'all' in selected_databases else selected_databases }}"
-  when: item != 'information_schema' and item != 'performance_schema'
+  when: item != 'information_schema' and item != 'performance_schema' and item != 'mysql'
