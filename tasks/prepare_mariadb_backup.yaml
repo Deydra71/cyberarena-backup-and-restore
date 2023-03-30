@@ -2,6 +2,10 @@
   command: "mkdir /tmp/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
   register: backup_dir_created
 
+- name: Debug backup_dir
+  debug:
+    msg: "{{ backup_dir_created.stdout.split('/')[-1] }}"
+
 - name: Fail if backup directory creation failed
   fail:
     msg: "Failed to create backup directory"
