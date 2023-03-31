@@ -3,13 +3,19 @@
   hosts: controller
   gather_facts: no
   tasks:
-    - name: Install openstack.cloud collection
-      ansible.builtin.ansible_galaxy_collection:
-        name: openstack.cloud
+    - name: Create projects
+      openstack.cloud.project:
+        cloud: openstack-1-2-1
+        endpoint_type: admin
         state: present
+        name: "{{ item }}"
+        enabled: True
+      loop:
+        - project1
+        - project2
 
     - name: Create users
-      openstack.cloud.user:
+      openstack.cloud.identity_user:
         cloud: openstack-1-2-1
         name: "{{ item }}"
         password: "{{ item }}_password"
@@ -17,15 +23,7 @@
         - user1
         - user2
 
-    - name: Create projects
-      openstack.cloud.project:
-        cloud: openstack-1-2-1
-        name: "{{ item }}"
-      loop:
-        - project1
-        - project2
-
-    - name: Set up access rights
+    - name: Set up user access rights
       openstack.cloud.role_assignment:
         cloud: openstack-1-2-1
         role: "_member_"

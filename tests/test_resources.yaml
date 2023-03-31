@@ -3,43 +3,38 @@
   hosts: controller
   gather_facts: no
   tasks:
-    - name: Install openstack.cloud collection
-      ansible.builtin.ansible_galaxy_collection:
-        name: openstack.cloud
-        state: present
-
-    - name: Test users
-      openstack.cloud.user_info:
-        cloud: openstack-1-2-1
-        name: "{{ item }}"
-      register: users_result
-      loop:
-        - user1
-        - user2
-      failed_when: item not in (users_result.resources | map(attribute='name') | list)
-
-    - name: Test projects
+    - name: Check existence of test projects
       openstack.cloud.project_info:
         cloud: openstack-1-2-1
         name: "{{ item }}"
-      register: projects_result
+      register: result
       loop:
         - project1
         - project2
-      failed_when: item not in (projects_result.resources | map(attribute='name') | list)
+      failed_when: result.projects | length == 0
+
+    - name: Check existence of test users
+      openstack.cloud.identity_user_info:
+        cloud: openstack-1-2-1
+        name: "{{ item }}"
+      register: result
+      loop:
+        - user1
+        - user2
+      failed_when: result.users | length == 0
 
     - name: Test networks
-      openstack.cloud.network_info:
+      openstack.cloud.networks_info:
         cloud: openstack-1-2-1
         name: "net_{{ item }}"
-      register: networks_result
+      register: result
       loop:
         - project1
         - project2
-      failed_when: item not in (networks_result.resources | map(attribute='name') | list)
+      failed_when: result.networks | length == 0
 
     - name: Test subnets
-      openstack.cloud.subnet_info:
+      openstack.cloud.subnets_info:
         cloud: openstack-1-2-1
         name: "subnet_{{ item }}"
       register: subnets_result
@@ -49,7 +44,7 @@
       failed_when: item not in (subnets_result.resources | map(attribute='name') | list)
 
     - name: Test routers
-      openstack.cloud.router_info:
+      openstack.cloud.routers_info:
         cloud: openstack-1-2-1
         name: "router_{{ item }}"
       register: routers_result
