@@ -45,12 +45,12 @@
     - name: Create subnets
       openstack.cloud.subnet:
         cloud: openstack-1-2-1
-        name: "subnet_{{ item.network.name }}"
-        network_name: "{{ item.network.name }}"
+        name: "subnet_{{ item.network['name'] }}"
+        network_name: "{{ item.network['name'] }}"
         cidr: "{{ item.cidr }}"
       loop:
-        - { network: "{{ networks_result.resources[0] }}", cidr: '192.168.1.0/24' }
-        - { network: "{{ networks_result.resources[1] }}", cidr: '192.168.2.0/24' }
+        - { network: "{{ networks_result.results[0]['network'] }}", cidr: '192.168.1.0/24' }
+        - { network: "{{ networks_result.results[1]['network'] }}", cidr: '192.168.2.0/24' }
 
     - name: Create routers
       openstack.cloud.router:
@@ -62,24 +62,26 @@
         - project2
 
     - name: Attach routers to subnets
-      openstack.cloud.router_interface:
+      openstack.cloud.router:
         cloud: openstack-1-2-1
-        router: "{{ item.router.name }}"
-        subnet: "subnet_{{ item.router.name }}"
+        name: "{{ item.router.name }}"
+        interfaces:
+          - net: "net_{{ item.router.name.split('_')[1] }}"
+            subnet: "subnet_net_{{ item.router.name.split('_')[1] }}"
       loop:
-        - { router: "{{ routers_result.resources[0] }}" }
-        - { router: "{{ routers_result.resources[1] }}" }
+        - { router: "{{ routers_result.results[0].router }}" }
+        - { router: "{{ routers_result.results[1].router }}" }
 
     - name: Create security group
       openstack.cloud.security_group:
         cloud: openstack-1-2-1
-        name: default_security_group
-        description: Default security group
+        name: test_security_group
+        description: Test security group
 
     - name: Add rules to security group
       openstack.cloud.security_group_rule:
         cloud: openstack-1-2-1
-        security_group: default_security_group
+        security_group: test_security_group
         protocol: "{{ item.protocol }}"
         direction: "{{ item.direction }}"
         port_range_min: "{{ item.port_range_min }}"
@@ -91,9 +93,26 @@
     - name: Create keypair
       openstack.cloud.keypair:
         cloud: openstack-1-2-1
-        name: my_keypair
+        name: cirros_keypair
 
-    - name: Create instances with basic cirros image
-      openstack.cloud.server:
+    - name: Create a minimal flavor
+      openstack.cloud.compute_flavor:
         cloud: openstack-1-2-1
-        name: "instance"
+        name: minimal_flavor
+        ram: 512
+        vcpus: 1
+        disk: 1
+      register: minimal_flavor_result
+
+    # Commented as there is problem with Glance service and any instance cannot be created ATM
+    # - name: Create an instance with the minimal flavor
+    #   openstack.cloud.server:
+    #     cloud: openstack-1-2-1
+    #     name: test_cirros_instance
+    #     image: cirros
+    #     flavor: "{{ minimal_flavor_result.flavor.id }}"
+    #     key_name: cirros_keypair
+    #     network: net_project1
+    #     security_groups:
+    #       - test_security_group
+    #     auto_ip: yes
