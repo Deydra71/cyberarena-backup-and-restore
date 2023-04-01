@@ -36,43 +36,44 @@
     - name: Test subnets
       openstack.cloud.subnets_info:
         cloud: openstack-1-2-1
-        name: "subnet_{{ item }}"
-      register: subnets_result
+        name: "subnet_net_{{ item }}"
+      register: result
       loop:
         - project1
         - project2
-      failed_when: item not in (subnets_result.resources | map(attribute='name') | list)
+      failed_when: result.subnets | length == 0
 
     - name: Test routers
       openstack.cloud.routers_info:
         cloud: openstack-1-2-1
         name: "router_{{ item }}"
-      register: routers_result
+      register: result
       loop:
         - project1
         - project2
-      failed_when: item not in (routers_result.resources | map(attribute='name') | list)
+      failed_when: result.routers | length == 0
 
     - name: Test security group
       openstack.cloud.security_group_info:
         cloud: openstack-1-2-1
-        name: default_security_group
-      register: security_group_result
-      failed_when: "'default_security_group' not in (security_group_result.resources | map(attribute='name') | list)"
+        name: test_security_group
+      register: result
+      failed_when: result.security_groups | length == 0
 
     - name: Test keypair
       openstack.cloud.keypair_info:
         cloud: openstack-1-2-1
         name: my_keypair
-      register: keypair_result
-      failed_when: "'my_keypair' not in (keypair_result.resources | map(attribute='name') | list)"
+      register: result
+      failed_when: result.keypairs | length == 0
 
-    - name: Test instances
-      openstack.cloud.server_info:
+    - name: Test flavor
+      openstack.cloud.compute_flavor_info:
         cloud: openstack-1-2-1
-        name: "instance_{{ item }}"
-      register: instances_result
-      loop:
-        - project1
-        - project2
-      failed_when: item not in (instances_result.resources | map(attribute='name') | list)
+        name: minimal_flavor
+      register: result
+      failed_when: result.flavors | length == 0
+
+    - name: Debug
+      debug:
+        msg: "{{ result }}"
