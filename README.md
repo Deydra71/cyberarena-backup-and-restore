@@ -84,6 +84,8 @@ For both backup and restore, you can pass extra vars as a file in the valid YAML
 ### On hosts machine (the host with the MariaDB container):
 * Python >= 3.6
 * openstacksdk with the ```clouds.yaml``` file specified on the host machine to suit the individual OpenStack environment, for more information, please refer to the OpenStack.Cloud collection.
+### Important note: 
+According to the OpenStack.Cloud collection, the openstacksdk version must be with the interval  <0.36, 0.99.0). But, the playbook run ends with the error "Incompatible openstacksdk library found: Version MUST be >=1.0 and <=None, but 0.61.0 is smaller than minimum version 1.0.". I advise to install openstacksdk version 1.0 and higher as the run ends with RC=0, even if the version is not correct according to the documentation.
 * Docker API >= 1.20
 * Docker SDK for Python
 
