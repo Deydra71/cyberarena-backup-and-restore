@@ -1,44 +1,12 @@
----
 - name: Delete OpenStack resources
   hosts: controller
   gather_facts: no
   tasks:
-    - name: Delete keypair
-      openstack.cloud.keypair:
-        cloud: openstack-1-2-1
-        name: cirros_keypair
-        state: absent
-
-    - name: Remove security group rules
-      openstack.cloud.security_group_rule:
-        cloud: openstack-1-2-1
-        security_group: test_security_group
-        protocol: "{{ item.protocol }}"
-        direction: "{{ item.direction }}"
-        port_range_min: "{{ item.port_range_min }}"
-        port_range_max: "{{ item.port_range_max }}"
-        state: absent
-      loop:
-        - { protocol: 'icmp', direction: 'ingress', port_range_min: -1, port_range_max: -1 }
-        - { protocol: 'tcp', direction: 'ingress', port_range_min: 22, port_range_max: 22 }
-
-    - name: Delete security group
+    - name: Delete security groups
       openstack.cloud.security_group:
         cloud: openstack-1-2-1
         name: test_security_group
         state: absent
-
-    - name: Remove router interfaces
-      openstack.cloud.router:
-        cloud: openstack-1-2-1
-        name: "{{ item.router.name }}"
-        interfaces:
-          - net: "net_{{ item.router.name.split('_')[1] }}"
-            subnet: "subnet_net_{{ item.router.name.split('_')[1] }}"
-            state: absent
-      loop:
-        - { router: "{{ routers_result.results[0].router }}" }
-        - { router: "{{ routers_result.results[1].router }}" }
 
     - name: Delete routers
       openstack.cloud.router:
@@ -46,33 +14,26 @@
         name: "{{ item }}"
         state: absent
       loop:
-        - "router_project1"
-        - "router_project2"
+        - router_project1
+        - router_project2
 
     - name: Delete subnets
       openstack.cloud.subnet:
         cloud: openstack-1-2-1
-        name: "subnet_{{ item.network['name'] }}"
-        network_name: "{{ item.network['name'] }}"
+        name: "{{ item }}"
         state: absent
       loop:
-        - { network: "{{ networks_result.results[0]['network'] }}" }
-        - { network: "{{ networks_result.results[1]['network'] }}" }
+        - subnet_net_project1
+        - subnet_net_project2
 
     - name: Delete networks
       openstack.cloud.network:
         cloud: openstack-1-2-1
-        name: "net_{{ item }}"
+        name: "{{ item }}"
         state: absent
       loop:
-        - "project1"
-        - "project2"
-
-    - name: Delete minimal flavor
-      openstack.cloud.compute_flavor:
-        cloud: openstack-1-2-1
-        name: minimal_flavor
-        state: absent
+        - net_project1
+        - net_project2
 
     - name: Delete users
       openstack.cloud.identity_user:
@@ -80,8 +41,14 @@
         name: "{{ item }}"
         state: absent
       loop:
-        - "user1"
-        - "user2"
+        - user1
+        - user2
+
+    - name: Delete keypair
+      openstack.cloud.keypair:
+        cloud: openstack-1-2-1
+        name: cirros_keypair
+        state: absent
 
     - name: Delete projects
       openstack.cloud.project:
@@ -89,5 +56,11 @@
         name: "{{ item }}"
         state: absent
       loop:
-        - "project1"
-        - "project2"
+        - project1
+        - project2
+
+    - name: Delete compute flavor
+      openstack.cloud.compute_flavor:
+        cloud: openstack-1-2-1
+        name: minimal_flavor
+        state: absent
