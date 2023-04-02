@@ -1,1 +1,3 @@
-*.yaml linguist-language=YAML linguist-vendored
+*.yaml linguist-language=YAML
+*.yml linguist-language=YAML
+*.yaml linguist-detectable=true
