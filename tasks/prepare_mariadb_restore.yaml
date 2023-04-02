@@ -60,4 +60,3 @@
     database: "{{ item.0 }}"
     database_name: "{{ item.1 }}"
   loop: "{{ backup_files|zip(mariadb_databases if 'all' in selected_backups else selected_backups) }}"
-
