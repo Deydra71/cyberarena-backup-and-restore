@@ -1,3 +1,4 @@
+---
 - name: Prepare MariaDB for the backup process
   hosts: controller
   become: yes

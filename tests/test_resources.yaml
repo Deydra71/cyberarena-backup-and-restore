@@ -73,7 +73,3 @@
         name: minimal_flavor
       register: result
       failed_when: result.flavors | length == 0
-
-    - name: Debug
-      debug:
-        msg: "{{ result }}"

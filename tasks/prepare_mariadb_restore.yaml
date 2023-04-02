@@ -1,3 +1,4 @@
+---
 - name: Check if any database is selected for the restoration
   fail:
     msg: "No database selected for the restoration. Please provide a value for selected_backups in the Variables box."

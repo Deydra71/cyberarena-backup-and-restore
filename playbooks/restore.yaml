@@ -1,3 +1,4 @@
+---
 - name: Prepare MariaDB for the restore process
   hosts: controller
   become: yes

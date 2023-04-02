@@ -1,3 +1,4 @@
+---
 - name: Dump the {{ database }} database
   community.docker.docker_container_exec:
     container: mariadb
