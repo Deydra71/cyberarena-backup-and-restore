@@ -27,5 +27,5 @@
 
 - name: Set the hash file to readable only
   file:
-    path: "{{ backup_dir }}/{{ database }}_dump.sql"
+    path: "{{ backup_dir }}/{{ database }}_dump.sql.hash"
     mode: "0444"
