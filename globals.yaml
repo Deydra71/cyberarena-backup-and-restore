@@ -20,4 +20,4 @@ mariadb_databases:
   - nova_cell0
   - placement
 
-backup_path: ~/openstack_backups
+backup_path: /home/ansible/openstack_backups
