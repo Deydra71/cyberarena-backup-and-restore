@@ -61,7 +61,7 @@
     vars:
       database: cinder
       database_name: cinder_dump.sql
-    when: "'cinder' in selected_databases or 'all' in selected_databases"
+    when: "'cinder' in selected_backups or 'all' in selected_backups"
   
   - name: Restore Glance database
     include_role:
@@ -69,7 +69,7 @@
     vars:
       database: glance
       database_name: glance_dump.sql
-    when: "'glance' in selected_databases or 'all' in selected_databases"
+    when: "'glance' in selected_backups or 'all' in selected_backups"
   
   - name: Restore Heat database
     include_role:
@@ -77,7 +77,7 @@
     vars:
       database: heat
       database_name: heat_dump.sql
-    when: "'heat' in selected_databases or 'all' in selected_databases"
+    when: "'heat' in selected_backups or 'all' in selected_backups"
   
   - name: Restore Keystone database
     include_role:
@@ -85,7 +85,7 @@
     vars:
       database: keystone
       database_name: keystone_dump.sql
-    when: "'keystone' in selected_databases or 'all' in selected_databases"
+    when: "'keystone' in selected_backups or 'all' in selected_backups"
 
   - name: Restore Neutron database
     include_role:
@@ -93,7 +93,7 @@
     vars:
       database: neutron
       database_name: neutron_dump.sql
-    when: "'neutron' in selected_databases or 'all' in selected_databases"
+    when: "'neutron' in selected_backups or 'all' in selected_backups"
 
   - name: Restore Nova database
     include_role:
@@ -101,7 +101,7 @@
     vars:
       database: nova
       database_name: nova_dump.sql
-    when: "'nova' in selected_databases or 'all' in selected_databases"
+    when: "'nova' in selected_backups or 'all' in selected_backups"
 
   - name: Restore Nova API database
     include_role:
@@ -109,7 +109,7 @@
     vars:
       database: nova_api
       database_name: nova_api_dump.sql
-    when: "'nova_api' in selected_databases or 'all' in selected_databases"
+    when: "'nova_api' in selected_backups or 'all' in selected_backups"
   
   - name: Restore Nova Cell0 database
     include_role:
@@ -117,7 +117,7 @@
     vars:
       database: nova_cell0
       database_name: nova_cell0_dump.sql
-    when: "'nova_cell0' in selected_databases or 'all' in selected_databases"
+    when: "'nova_cell0' in selected_backups or 'all' in selected_backups"
 
   - name: Restore Placement database
     include_role:
@@ -125,4 +125,4 @@
     vars:
       database: placement
       database_name: placement_dump.sql
-    when: "'placement' in selected_databases or 'all' in selected_databases"
+    when: "'placement' in selected_backups or 'all' in selected_backups"
