@@ -1,31 +1,31 @@
 ---
-- name: Dump the {{ database }} database
+- name: Dump the database
   community.docker.docker_container_exec:
     container: mariadb
     command: "mysqldump -u ansible -p{{ mariadb_password }} {{ database }}"
   become: true
   register: dump_output
 
-- name: Save the {{ database }} dump to the file
+- name: Save the dump to the file
   copy:
     content: "{{ dump_output.stdout }}"
     dest: "{{ backup_dir }}/{{ database }}_dump.sql"
 
-- name: Set the {{ database }} dump file to readable only
+- name: Set the dump file to readable only
   file:
     path: "{{ backup_dir }}/{{ database }}_dump.sql"
     mode: "0444"
 
-- name: Create hash for {{ database }} dump file
+- name: Create hash for dump file
   shell: "sha256sum {{ backup_dir }}/{{ database }}_dump.sql | awk '{print $1}'"
   register: dump_hash
 
-- name: Create {{ database }} dump hash file
+- name: Create dump hash file
   file:
     path: "{{ backup_dir }}/{{ database }}_dump.sql.hash"
     state: touch
 
-- name: Save {{ database }} dump hash to file
+- name: Save dump hash to file
   copy:
     content: "{{ dump_hash.stdout | trim }}"
     dest: "{{ backup_dir }}/{{ database }}_dump.sql.hash"

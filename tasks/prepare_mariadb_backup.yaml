@@ -37,10 +37,75 @@
     available_databases: "{{ db_output.stdout | split('Database') | last | split('\n') | map('trim') | select | list }}"
 
 - name: Dump selected database(s)
-  include_role:
-    name: ../roles/dump_database
-  vars:
-    database: "{{ item }}"
-    backup_dir: "/tmp/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
-  with_items: "{{ available_databases if 'all' in selected_databases else selected_databases }}"
-  when: item != 'information_schema' and item != 'performance_schema' and item != 'mysql'
+  block:
+  - name: Dump Cinder database
+    include_role:
+      name: ../roles/database_roles/cinder
+    vars:
+      database: cinder
+      backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+    when: "'cinder' in selected_databases or 'all' in selected_databases"
+
+  - name: Dump Glance database
+    include_role:
+      name: ../roles/database_roles/glance
+    vars:
+      database: glance
+      backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+    when: "'glance' in selected_databases or 'all' in selected_databases"
+
+  - name: Dump Heat database
+    include_role:
+      name: ../roles/database_roles/heat
+    vars:
+      database: heat
+      backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+    when: "'heat' in selected_databases or 'all' in selected_databases"
+
+  - name: Dump Keystone database
+    include_role:
+      name: ../roles/database_roles/keystone
+    vars:
+      database: keystone
+      backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+    when: "'keystone' in selected_databases or 'all' in selected_databases"
+
+  - name: Dump Neutron database
+    include_role:
+      name: ../roles/database_roles/neutron
+    vars:
+      database: neutron
+      backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+    when: "'neutron' in selected_databases or 'all' in selected_databases"
+
+  - name: Dump Nova database
+    include_role:
+      name: ../roles/database_roles/nova
+    vars:
+      database: nova
+      backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+    when: "'nova' in selected_databases or 'all' in selected_databases"
+
+  - name: Dump Nova API database
+    include_role:
+      name: ../roles/database_roles/nova_api
+    vars:
+      database: nova_api
+      backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+    when: "'nova_api' in selected_databases or 'all' in selected_databases"
+
+  - name: Dump Nova Cell0 database
+    include_role:
+      name: ../roles/database_roles/nova_cell0
+    vars:
+      database: nova_cell0
+      backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+    when: "'nova_cell0' in selected_databases or 'all' in selected_databases"
+
+  - name: Dump Placement database
+    include_role:
+      name: ../roles/database_roles/placement
+    vars:
+      database: placement
+      backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+    when: "'placement' in selected_databases or 'all' in selected_databases"
