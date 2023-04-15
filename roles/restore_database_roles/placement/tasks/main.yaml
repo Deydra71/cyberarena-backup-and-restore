@@ -1,0 +1,6 @@
+---
+- name: Restore Pleacement database
+  include_tasks: ../../mariadb/restore_database/tasks/main.yaml
+  vars:
+    database: placement
+    database_name: placement_dump.sql
