@@ -2,5 +2,5 @@
 - name: Restore Nova Cell0 database
   include_tasks: ../../mariadb/restore_database/tasks/main.yaml
   vars:
-    database: nova_cell0
-    database_name: nova_cell0_dump.sql
+    database: nova_cell0_dump.sql
+    database_name: nova_cell0

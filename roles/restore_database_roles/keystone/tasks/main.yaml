@@ -2,5 +2,5 @@
 - name: Restore Keystone database
   include_tasks: ../../mariadb/restore_database/tasks/main.yaml
   vars:
-    database: keystone
-    database_name: keystone_dump.sql
+    database: keystone_dump.sql
+    database_name: keystone
