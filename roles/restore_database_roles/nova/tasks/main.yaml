@@ -1,0 +1,6 @@
+---
+- name: Restore Nova database
+  include_tasks: ../../mariadb/restore_database/tasks/main.yaml
+  vars:
+    database: nova_dump.sql
+    database_name: nova

@@ -1,3 +1,4 @@
+---
 - name: Get the OpenStack images
   # TODO: Use the OpenStack collection CLI insteadk of the shell module
   shell: "openstack image list -c ID -c Name -f value | awk '{print $1,$2}'"

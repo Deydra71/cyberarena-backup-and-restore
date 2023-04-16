@@ -19,3 +19,5 @@ mariadb_databases:
   - nova_api
   - nova_cell0
   - placement
+
+backup_path: /home/ansible/openstack_backups

@@ -1,0 +1,6 @@
+---
+- name: Backup Nova Cell0 database
+  include_tasks: ../../mariadb/dump_database/tasks/main.yaml
+  vars:
+    database: nova_cell0
+    backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
