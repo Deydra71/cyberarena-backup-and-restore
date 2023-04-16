@@ -104,16 +104,14 @@
         disk: 1
       register: minimal_flavor_result
 
-    # Commented as there is problem with Glance service and any instance cannot be created ATM
-    # - name: Create an instance with the minimal flavor
-    #   openstack.cloud.server:
-    #     cloud: openstack-1-2-1
-    #     name: test_cirros_instance
-    #     image: cirros
-    #     flavor: "{{ minimal_flavor_result.flavor.id }}"
-    #     key_name: cirros_keypair
-    #     network: net_project1
-    #     security_groups:
-    #       - test_security_group
-    #     auto_ip: yes
-    
+    - name: Create an instance with the minimal flavor
+      openstack.cloud.server:
+        cloud: openstack-1-2-1
+        name: test_cirros_instance
+        image: cirros
+        flavor: "{{ minimal_flavor_result.flavor.id }}"
+        key_name: cirros_keypair
+        network: net_project1
+        security_groups:
+          - test_security_group
+        auto_ip: yes

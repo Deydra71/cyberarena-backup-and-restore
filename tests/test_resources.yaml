@@ -81,3 +81,11 @@
         name: minimal_flavor
       register: result
       failed_when: result.flavors | length == 0
+
+    - name: Check existence of test instances
+      ignore_errors: true
+      openstack.cloud.server_info:
+        cloud: openstack-1-2-1
+        name: test_cirros_instance
+      register: result
+      failed_when: result.servers | length == 0
