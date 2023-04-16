@@ -1,0 +1,72 @@
+- name: Delete OpenStack resources
+  hosts: controller
+  gather_facts: no
+  tasks:
+    - name: Delete security groups
+      openstack.cloud.security_group:
+        cloud: openstack-1-2-1
+        name: test_security_group
+        state: absent
+
+    - name: Delete routers
+      openstack.cloud.router:
+        cloud: openstack-1-2-1
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - router_project1
+        - router_project2
+
+    - name: Delete subnets
+      openstack.cloud.subnet:
+        cloud: openstack-1-2-1
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - subnet_net_project1
+        - subnet_net_project2
+
+    - name: Delete networks
+      openstack.cloud.network:
+        cloud: openstack-1-2-1
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - net_project1
+        - net_project2
+
+    - name: Delete users
+      openstack.cloud.identity_user:
+        cloud: openstack-1-2-1
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - user1
+        - user2
+
+    - name: Delete keypair
+      openstack.cloud.keypair:
+        cloud: openstack-1-2-1
+        name: cirros_keypair
+        state: absent
+
+    - name: Delete projects
+      openstack.cloud.project:
+        cloud: openstack-1-2-1
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - project1
+        - project2
+
+    - name: Delete compute flavor
+      openstack.cloud.compute_flavor:
+        cloud: openstack-1-2-1
+        name: minimal_flavor
+        state: absent
+    
+    - name: Delete instance with the minimal flavor
+      openstack.cloud.server:
+        cloud: openstack-1-2-1
+        name: test_cirros_instance
+        state: absent

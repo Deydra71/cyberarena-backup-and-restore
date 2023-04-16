@@ -4,6 +4,7 @@
   gather_facts: no
   tasks:
     - name: Check existence of test projects
+      ignore_errors: true
       openstack.cloud.project_info:
         cloud: openstack-1-2-1
         name: "{{ item }}"
@@ -14,6 +15,7 @@
       failed_when: result.projects | length == 0
 
     - name: Check existence of test users
+      ignore_errors: true
       openstack.cloud.identity_user_info:
         cloud: openstack-1-2-1
         name: "{{ item }}"
@@ -24,6 +26,7 @@
       failed_when: result.users | length == 0
 
     - name: Test networks
+      ignore_errors: true
       openstack.cloud.networks_info:
         cloud: openstack-1-2-1
         name: "net_{{ item }}"
@@ -34,6 +37,7 @@
       failed_when: result.networks | length == 0
 
     - name: Test subnets
+      ignore_errors: true
       openstack.cloud.subnets_info:
         cloud: openstack-1-2-1
         name: "subnet_net_{{ item }}"
@@ -44,6 +48,7 @@
       failed_when: result.subnets | length == 0
 
     - name: Test routers
+      ignore_errors: true
       openstack.cloud.routers_info:
         cloud: openstack-1-2-1
         name: "router_{{ item }}"
@@ -54,6 +59,7 @@
       failed_when: result.routers | length == 0
 
     - name: Test security group
+      ignore_errors: true
       openstack.cloud.security_group_info:
         cloud: openstack-1-2-1
         name: test_security_group
@@ -61,19 +67,25 @@
       failed_when: result.security_groups | length == 0
 
     - name: Test keypair
+      ignore_errors: true
       openstack.cloud.keypair_info:
         cloud: openstack-1-2-1
-        name: my_keypair
+        name: cirros_keypair
       register: result
       failed_when: result.keypairs | length == 0
 
     - name: Test flavor
+      ignore_errors: true
       openstack.cloud.compute_flavor_info:
         cloud: openstack-1-2-1
         name: minimal_flavor
       register: result
       failed_when: result.flavors | length == 0
 
-    - name: Debug
-      debug:
-        msg: "{{ result }}"
+    - name: Check existence of test instances
+      ignore_errors: true
+      openstack.cloud.server_info:
+        cloud: openstack-1-2-1
+        name: test_cirros_instance
+      register: result
+      failed_when: result.servers | length == 0

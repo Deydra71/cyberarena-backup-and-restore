@@ -1,3 +1,4 @@
+---
 - name: Check if any database is selected for the restoration
   fail:
     msg: "No database selected for the restoration. Please provide a value for selected_backups in the Variables box."
@@ -53,10 +54,75 @@
   ignore_errors: true
 
 - name: Start the restore process
-  include_role:
-    name: ../roles/restore_database
-  vars:
-    database: "{{ item.0 }}"
-    database_name: "{{ item.1 }}"
-  loop: "{{ backup_files|zip(mariadb_databases if 'all' in selected_backups else selected_backups) }}"
+  block:
+  - name: Restore Cinder database
+    include_role:
+      name: ../roles/restore_database_roles/cinder
+    vars:
+      database: cinder
+      database_name: cinder_dump.sql
+    when: "'cinder' in selected_backups or 'all' in selected_backups"
+  
+  - name: Restore Glance database
+    include_role:
+      name: ../roles/restore_database_roles/glance
+    vars:
+      database: glance
+      database_name: glance_dump.sql
+    when: "'glance' in selected_backups or 'all' in selected_backups"
+  
+  - name: Restore Heat database
+    include_role:
+      name: ../roles/restore_database_roles/heat
+    vars:
+      database: heat
+      database_name: heat_dump.sql
+    when: "'heat' in selected_backups or 'all' in selected_backups"
+  
+  - name: Restore Keystone database
+    include_role:
+      name: ../roles/restore_database_roles/keystone
+    vars:
+      database: keystone
+      database_name: keystone_dump.sql
+    when: "'keystone' in selected_backups or 'all' in selected_backups"
 
+  - name: Restore Neutron database
+    include_role:
+      name: ../roles/restore_database_roles/neutron
+    vars:
+      database: neutron
+      database_name: neutron_dump.sql
+    when: "'neutron' in selected_backups or 'all' in selected_backups"
+
+  - name: Restore Nova database
+    include_role:
+      name: ../roles/restore_database_roles/nova
+    vars:
+      database: nova
+      database_name: nova_dump.sql
+    when: "'nova' in selected_backups or 'all' in selected_backups"
+
+  - name: Restore Nova API database
+    include_role:
+      name: ../roles/restore_database_roles/nova_api
+    vars:
+      database: nova_api
+      database_name: nova_api_dump.sql
+    when: "'nova_api' in selected_backups or 'all' in selected_backups"
+  
+  - name: Restore Nova Cell0 database
+    include_role:
+      name: ../roles/restore_database_roles/nova_cell0
+    vars:
+      database: nova_cell0
+      database_name: nova_cell0_dump.sql
+    when: "'nova_cell0' in selected_backups or 'all' in selected_backups"
+
+  - name: Restore Placement database
+    include_role:
+      name: ../roles/restore_database_roles/placement
+    vars:
+      database: placement
+      database_name: placement_dump.sql
+    when: "'placement' in selected_backups or 'all' in selected_backups"

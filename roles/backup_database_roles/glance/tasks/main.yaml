@@ -1,0 +1,6 @@
+---
+- name: Backup Glance database
+  include_tasks: ../../mariadb/dump_database/tasks/main.yaml
+  vars:
+    database: glance
+    backup_dir: "{{ backup_path }}/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"

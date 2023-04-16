@@ -1,0 +1,6 @@
+---
+- name: Restore Heat database
+  include_tasks: ../../mariadb/restore_database/tasks/main.yaml
+  vars:
+    database: heat_dump.sql
+    database_name: heat

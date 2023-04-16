@@ -1,0 +1,6 @@
+---
+- name: Restore Glance database
+  include_tasks: ../../mariadb/restore_database/tasks/main.yaml
+  vars:
+    database: glance_dump.sql
+    database_name: glance

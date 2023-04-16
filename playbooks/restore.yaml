@@ -1,10 +1,11 @@
+---
 - name: Prepare MariaDB for the restore process
   hosts: controller
   become: yes
   vars_files:
     - ../globals.yaml
   vars:
-    backup_dir: "/tmp/{{ timestamp[0] }}"
+    backup_dir: "{{ backup_path }}/{{ timestamp[0] }}"
   tasks:
     - name: Include tasks for restore process
       include_tasks: ../tasks/prepare_mariadb_restore.yaml

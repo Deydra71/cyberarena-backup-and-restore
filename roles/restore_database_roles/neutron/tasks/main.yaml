@@ -1,0 +1,6 @@
+---
+- name: Restore Neutron database
+  include_tasks: ../../mariadb/restore_database/tasks/main.yaml
+  vars:
+    database: neutron_dump.sql
+    database_name: neutron
