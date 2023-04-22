@@ -14,7 +14,8 @@
 
 - name: Download Glance image
   shell: openstack image save --file {{ glance images }}
-  executable: /bin/bash
+  args:  
+    executable: /bin/bash
 
 - name: Transfer image to local system
   fetch:

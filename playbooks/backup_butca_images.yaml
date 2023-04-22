@@ -7,15 +7,8 @@
   tasks:
     - name: Authenticate to OpenStack cloud
       shell: source ~/admin-openrc.sh
-      executable: /bin/bash
-    
-    - name: Add OpenStack CLI binary directory to PATH
-      become: yes
-      become_user: ansible
-      lineinfile:
-        dest: /home/ansible/.bashrc
-        line: 'export PATH="$PATH:/usr/local/bin"'
-        insertafter: EOF
+      args:  
+        executable: /bin/bash
 
     - name: Include tasks for the BUTCA images backup to the storage server
       include_tasks: ../tasks/backup_images.yaml
