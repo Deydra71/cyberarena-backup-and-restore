@@ -1,10 +1,9 @@
 ---
-# Paused as the Glance issue is occuring
-# - name: Backup the BUTCA images to the storage server
-#   hosts: controller
-#   become: yes
-#   vars_files:
-#     - ../globals.yaml
-#    tasks:
-#     - name: Include tasks for the BUTCA images backup to the storage server
-#       include_tasks:
+ - name: Backup the BUTCA images to the storage server
+   hosts: controller
+   become: yes
+   vars_files:
+     - ../globals.yaml
+    tasks:
+     - name: Include tasks for the BUTCA images backup to the storage server
+       include_tasks: ../tasks/backup_images.yaml
