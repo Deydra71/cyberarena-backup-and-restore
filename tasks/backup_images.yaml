@@ -1,27 +1,30 @@
 ---
 - name: Retrieve all available Openstack images
   openstack.cloud.image_info:
-  register: result
+  register: glance_images
 
-- name: Show images
-  debug:
-    msg: "{{ result.image }}"
+- name: Create backup directory with timestamp
+  command: "mkdir {{ backup_path }}/glance_images/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+  register: backup_dir_created
 
-# - name: Create the backup directory on the storage server
-#   ansible.builtin.file:
-#     path: "/tmp/butca_images"
-#     state: directory
-#     delegate_to: "{{ storage_server_ip }}"
-#     remote_user: "{{ ssh_user }}"
-#     ssh_pass: "{{ ssh_password }}"
-#   when: storage is defined and image_list is defined
+- name: Fail if backup directory creation failed
+  fail:
+    msg: "Failed to create backup directory"
+  when: backup_dir_created.rc != 0
 
-# - name: Copy the images to the storage server
-#   ansible.builtin.copy:
-#     src: "/var/lib/glance/images/{{ item[0] }}.img"
-#     dest: "/tmp/{{ backup_dir_created.stdout }}/{{ item[1] }}.img"
-#   with_items: "{{ images }}"
-#   delegate_to: "{{ storage_server_ip }}"
-#   remote_user: "{{ ssh_user }}"
-#   ssh_pass: "{{ ssh_password }}"
-#   when: storage is defined and image_list is defined
+- name: Download Glance image
+  shell: openstack image save --file {{ glance images }}
+  executable: /bin/bash
+
+- name: Transfer image to local system
+  fetch:
+    src: "/tmp/cirros.qcow2"
+    dest: "{{ backup_path }}/glance_images/cirros.qcow2"
+    flat: yes
+
+# - name: Download Glance images
+#   shell:
+
+#     image: "{{ item.id }}"
+#     file: "{{ backup_path }}/glance_images/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}/{{ item.name }}"
+#   with_items: "{{ glance_images }}"
