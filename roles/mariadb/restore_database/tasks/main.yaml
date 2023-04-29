@@ -1,5 +1,5 @@
 ---
-- name: Get the hash of the
+- name: Get the hash of the dump file
   stat:
     path: "{{ backup_dir }}/{{ database }}.hash"
   register: old_hash_stat
@@ -9,7 +9,7 @@
     path: "{{ backup_dir }}/{{ database }}.hash.new"
     state: touch
 
-- name: Create new hash of the
+- name: Create new hash of the dump file
   shell: "sha256sum {{ backup_dir }}/{{ database }} | awk '{print $1}'"
   register: new_hash
 
@@ -18,7 +18,7 @@
     content: "{{ new_hash.stdout | trim }}"
     dest: "{{ backup_dir }}/{{ database }}.hash.new"
 
-- name: Get the new hash of the
+- name: Get the new hash of the dump file
   stat:
     path: "{{ backup_dir }}/{{ database }}.hash.new"
   register: new_hash_stat

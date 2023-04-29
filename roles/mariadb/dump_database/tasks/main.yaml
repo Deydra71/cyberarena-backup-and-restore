@@ -34,3 +34,5 @@
   file:
     path: "{{ backup_dir }}/{{ database }}_dump.sql.hash"
     mode: "0444"
+
+- name: Copy files to the storage server
