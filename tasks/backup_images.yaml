@@ -18,6 +18,6 @@
 
 - name: Set file permissions to read-only
   file:
-    path: "{{ backup_path }}/glance_images/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}/{{ item.item.name }}.{{ item.item.disk_format }}"
+    path: "{{ backup_path }}/glance_images/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}/{{ item.name }}.{{ item.disk_format }}"
     mode: "444"
   with_items: "{{ glance_images.images }}"
