@@ -15,3 +15,9 @@
 - name: Download Glance image
   shell: "source ~/admin-openrc.sh; openstack image save --file {{ backup_path }}/glance_images/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}/{{ item.name }}.{{ item.disk_format }} {{ item.name }}"
   with_items: "{{ glance_images.images }}"
+
+- name: Set file permissions to read-only
+  file:
+    path: "{{ backup_path }}/glance_images/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}/{{ item.item.name }}.{{ item.item.disk_format }}"
+    mode: "444"
+  loop: "{{ download_result.results }}"
