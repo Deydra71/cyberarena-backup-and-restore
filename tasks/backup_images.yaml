@@ -12,15 +12,6 @@
     msg: "Failed to create backup directory"
   when: backup_dir_created.rc != 0
 
-- name: Authenticate to OpenStack cloud
-  shell: source ~/admin-openrc.sh
-
-- name: Debug
-  debug:
-    msg: "{{ glance_images.images }}"
-
 - name: Download Glance image
   shell: "source ~/admin-openrc.sh; openstack image save --file {{ backup_path }}/glance_images/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}/{{ item.name }}.{{ item.disk_format }} {{ item.name }}"
   with_items: "{{ glance_images.images }}"
-
-- name: 
