@@ -20,4 +20,4 @@
   file:
     path: "{{ backup_path }}/glance_images/{{ ansible_date_time.date }}_{{ ansible_date_time.time }}/{{ item.item.name }}.{{ item.item.disk_format }}"
     mode: "444"
-  loop: "{{ download_result.results }}"
+  with_items: "{{ glance_images.images }}"
