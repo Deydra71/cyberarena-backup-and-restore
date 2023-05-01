@@ -1,4 +1,3 @@
-### Warning: This project is still flagged as "Work in progress", keep that in mind, please.
 # OpenStack-MariaDB-backup-and-restore
 The Ansible project for creating backups for the core OpenStack services form the MariaDB database as well as restoring them. This project is exclusively set up for the needs of the BUTCA (Brno University of Technology Cyber Arena). In addition to backuping MariaDB, it is possible to backup pressent OS images and snapshots and store them in the external server.
 
