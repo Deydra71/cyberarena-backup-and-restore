@@ -43,7 +43,6 @@
   delegate_to: controller
   vars:
     storage_host: storage
-  ssh_user: centos
 
 - name: Copy files to the storage server
   copy:
@@ -53,4 +52,3 @@
   delegate_to: controller
   vars:
     storage_host: storage
-  ssh_user: centos
