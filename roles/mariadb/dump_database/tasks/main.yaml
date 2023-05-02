@@ -36,3 +36,21 @@
     mode: "0444"
 
 - name: Copy files to the storage server
+  copy:
+    src: "{{ backup_dir }}/{{ database }}_dump.sql"
+    dest: "{{ storage_host }}:/home/centos/openstack_backups/"
+    remote_src: yes
+  delegate_to: controller
+  vars:
+    storage_host: storage
+  ssh_user: centos
+
+- name: Copy files to the storage server
+  copy:
+    src: "{{ backup_dir }}/{{ database }}_dump.sql.hash"
+    dest: "{{ storage_host }}:/home/centos/openstack_backups/"
+    remote_src: yes
+  delegate_to: controller
+  vars:
+    storage_host: storage
+  ssh_user: centos
