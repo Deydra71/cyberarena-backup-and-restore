@@ -21,3 +21,5 @@ mariadb_databases:
   - placement
 
 backup_path: /home/ansible/openstack_backups
+
+storage_backup_path: /home/centos/openstack_backups
